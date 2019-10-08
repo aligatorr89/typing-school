@@ -1,0 +1,23 @@
+{
+  "name": "typing-school",
+  "version": "1.0.0",
+  "description": "learn typing",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aligatorr89/typing-school.git"
+  },
+  "keywords": [
+    "learn",
+    "typing"
+  ],
+  "author": "Rok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aligatorr89/typing-school/issues"
+  },
+  "homepage": "https://github.com/aligatorr89/typing-school#readme"
+}

@@ -1,42 +1,52 @@
 import App from './app';
+import { getTextData } from './api';
 
 (function() {
-  var app = new App();
+  const app = new App();
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-      if(this.readyState == 4 && this.status == 200) {
-        app.setText(xhttp.responseText);
-        textDiv.innerHTML = app.getTextChunk();
-      }
-  };
-  xhttp.open("GET", 'api/' + '?language=' + app.language + '&mode=' + app.mode, true);
-  xhttp.send();
+  getTextData()
+  .then(data => {
+    app.setTextData(data);
+    textDiv.innerHTML = showTextDataChunk();
+  })
+  .catch(error => error);
 
-  var textDiv = document.getElementById('words');
-  var userInput = document.getElementById('typing');
-  var refreshButton = document.getElementById('refreshText');
+  const textDiv = document.getElementById('words');
+  const userInput = document.getElementById('typing');
+  const refreshButton = document.getElementById('refreshText');
+  const results = document.getElementById('previous_result');
 
-  var spaceCount = 0;
+  let spaceCount = 0;
+  let start = 0;
+
   userInput.addEventListener('keyup', function(event) {
+    start = start ? start : Date.now();
     if(event.keyCode === 32) {
       spaceKeyupDisableCorrection(event);
     }
   });
 
   function spaceKeyupDisableCorrection(event) {
-    app.checkCorrect(userInput.value, spaceCount);
-
-    var span = textDiv.getElementsByClassName('word')[spaceCount];
+    app.analyizeWord(userInput.value, spaceCount, Date.now() - start);
+    const span = textDiv.getElementsByClassName('word')[spaceCount];
     span.setAttribute('class', span.getAttribute('class') + ' done');
     userInput.value = '';
     spaceCount++;
+    start = Date.now();
   }
 
   refreshButton.addEventListener('click', function() {
-    console.log(app.statistics);
+    start = 0;
     spaceCount = 0;
-    textDiv.innerHTML = app.getTextChunk();
+    showResults();
+    textDiv.innerHTML = showTextDataChunk();
   });
 
+  function showTextDataChunk() {
+    return app.getTextChunk().map(word => '<span class="word">' + word + '</span>').join(' ')
+  }
+
+  function showResults() {
+    results.innerHTML = '<pre>' + JSON.stringify(app.analyzePrevious()) + '</pre>';
+  }
 })();

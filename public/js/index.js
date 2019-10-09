@@ -1,6 +1,7 @@
-'use strict';
+import App from './app';
+
 (function() {
-  var app = new window.__APP_TYPING_SCHOOL.APP();
+  var app = new App();
 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -25,7 +26,7 @@
 
   function spaceKeyupDisableCorrection(event) {
     app.checkCorrect(userInput.value, spaceCount);
-    
+
     var span = textDiv.getElementsByClassName('word')[spaceCount];
     span.setAttribute('class', span.getAttribute('class') + ' done');
     userInput.value = '';

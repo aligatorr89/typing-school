@@ -4,7 +4,9 @@
   "description": "learn typing",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "start": "npm run build && node index.js",
+    "build": "webpack",
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,8 @@
   "homepage": "https://github.com/aligatorr89/typing-school#readme",
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^12.7.12"
+    "@types/node": "^12.7.12",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
   }
 }

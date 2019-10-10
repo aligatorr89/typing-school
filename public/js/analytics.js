@@ -1,9 +1,13 @@
+import { indexedDb } from './indexedDB';
+
 export class Analytics {
   constructor() {
     this.data = [];
     this.prevChunkStart = 0;
     this.prevChunkEnd = 0;
-    this.analysises = [];
+    this.db;
+    indexedDb.getDbConnection()
+    .then(dbConnection => this.db = dbConnection);
   }
 
   insert(word, correctWord, timeNeeded) {
@@ -37,7 +41,7 @@ export class Analytics {
     this.prevChunkStart = this.prevChunkEnd;
 
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
-    this.analysises.push(result);
+    indexedDb.insertData(this.db, 'analytics', result);
     return result;
   }
 }

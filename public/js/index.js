@@ -4,6 +4,7 @@ import { TypingTest } from './typing-test';
 (function() {
   const app = new App();
   let typingTest;
+
   app.getData()
   .then(res => {
     typingTest = new TypingTest(app.getTextChunk());

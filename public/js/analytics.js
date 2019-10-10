@@ -1,4 +1,4 @@
-import { indexedDb } from './indexedDB';
+import indexedDb from './indexedDB';
 
 export class Analytics {
   constructor() {

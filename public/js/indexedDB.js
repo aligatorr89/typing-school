@@ -53,10 +53,9 @@ function insertData(db, table, row) {
   const store = getObjectStore(db, table, 'readwrite');
   const req = store.add(row);
   req.onsuccess = function (evt) {
-    console.log("Insertion in DB successful");
   };
   req.onerror = function() {
-    console.error("add to db error", this.error);
+    // console.error("add to db error", this.error);
   };
 };
 
@@ -73,7 +72,7 @@ function getData(db, table, query) {
   });
 };
 
-export const indexedDb = {
+export default {
   getDbConnection,
   insertData,
   getData

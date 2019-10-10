@@ -70,6 +70,7 @@ function getDbConnection() {
       store.createIndex('words_count', 'words_count', { unique: false });
       store.createIndex('timeNeeded', 'timeNeeded', { unique: false });
       store.createIndex('mistakes', 'mistakes', { unique: false });
+      store.createIndex('wpm', 'wpm', { unique: false });
       store.createIndex('failedWords', 'failedWords', { unique: false });
 
       resolve(db);

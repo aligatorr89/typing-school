@@ -16,11 +16,13 @@ import { TypingTest } from './typing-test';
   const userInput = document.getElementById('typing');
   const refreshButton = document.getElementById('refreshText');
   const results = document.getElementById('previous_result');
+  const timer = document.getElementById('timer');
 
   function keyDownEvent(event) {
     if(event.keyCode !== 27) {
       typingTest.start();
       userInput.removeEventListener('keydown', keyDownEvent);
+      showTimerInterval();
     }
   }
 
@@ -35,6 +37,7 @@ import { TypingTest } from './typing-test';
     showResults();
     typingTest = new TypingTest(app.getTextChunk());
     showTextDataChunk();
+    deleteTimer();
     userInput.addEventListener('keydown', keyDownEvent);
   }
 
@@ -54,5 +57,17 @@ import { TypingTest } from './typing-test';
 
   function showResults() {
     results.innerHTML = '<pre>' + JSON.stringify(typingTest.analyze()) + '</pre>';
+  }
+
+  let timerInterval;
+  function showTimerInterval() {
+    let seconds = 0;
+    timerInterval = setInterval(function() {
+        timer.innerText = ++seconds;
+    }, 1000);
+  }
+  function deleteTimer() {
+    clearInterval(timerInterval);
+    timer.innerText = 0;
   }
 })();

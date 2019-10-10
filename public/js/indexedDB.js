@@ -16,6 +16,39 @@ if (!window.indexedDB) {
 
 const idb = window.indexedDB;
 
+export default class IDB {
+  constructor() {
+    this.db;
+    getDbConnection()
+    .then(db => this.db = db);
+  }
+  getObjectStore(table, mode) {
+    var tx = this.db.transaction(table, mode);
+    return tx.objectStore(table);
+  }
+  insertData(table, row) {
+    const store = this.getObjectStore(table, 'readwrite');
+    const req = store.add(row);
+    req.onsuccess = function (evt) {
+    };
+    req.onerror = function() {
+      // console.error("add to db error", this.error);
+    };
+  }
+  getData(table, query) {
+    const store = this.getObjectStore(table, 'readonly');
+    const req = store.getAll();
+    return new Promise((resolve, reject) => {
+      req.onsuccess = function (evt) {
+        resolve(evt.target.result);
+      };
+      req.onerror = function() {
+        reject(this.error);
+      };
+    });
+  }
+}
+
 function getDbConnection() {
   var request = idb.open('typing_school');
 
@@ -42,38 +75,4 @@ function getDbConnection() {
       resolve(db);
     };
   })
-};
-
-function getObjectStore(db, table, mode) {
-   var tx = db.transaction(table, mode);
-   return tx.objectStore(table);
- };
-
-function insertData(db, table, row) {
-  const store = getObjectStore(db, table, 'readwrite');
-  const req = store.add(row);
-  req.onsuccess = function (evt) {
-  };
-  req.onerror = function() {
-    // console.error("add to db error", this.error);
-  };
-};
-
-function getData(db, table, query) {
-  const store = getObjectStore(db, table, 'readonly');
-  const req = store.getAll();
-  return new Promise((resolve, reject) => {
-    req.onsuccess = function (evt) {
-      resolve(evt.target.result);
-    };
-    req.onerror = function() {
-      reject(this.error);
-    };
-  });
-};
-
-export default {
-  getDbConnection,
-  insertData,
-  getData
 };

@@ -5,9 +5,7 @@ export class Analytics {
     this.data = [];
     this.prevChunkStart = 0;
     this.prevChunkEnd = 0;
-    this.db;
-    indexedDb.getDbConnection()
-    .then(dbConnection => this.db = dbConnection);
+    this.dbConnection = new indexedDb();
   }
 
   insert(word, correctWord, timeNeeded) {
@@ -41,7 +39,7 @@ export class Analytics {
     this.prevChunkStart = this.prevChunkEnd;
 
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
-    indexedDb.insertData(this.db, 'analytics', result);
+    this.dbConnection.insertData('analytics', result);
     return result;
   }
 }

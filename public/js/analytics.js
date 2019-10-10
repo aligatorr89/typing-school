@@ -3,9 +3,11 @@ export class Analytics {
     this.data = [];
     this.prevChunkStart = 0;
     this.prevChunkEnd = 0;
+    this.analysises = [];
   }
 
   insert(word, correctWord, timeNeeded) {
+    word = word.replace(' ', '');
     this.data.push({
       word, correctWord, timeNeeded
     });
@@ -28,6 +30,7 @@ export class Analytics {
     this.prevChunkStart = this.prevChunkEnd;
 
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
+    this.analysises.push(result);
     return result;
   }
 }

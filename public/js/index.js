@@ -1,13 +1,13 @@
 import App from './app';
-import { getTextData } from './api';
+import { TypingTest } from './typing-test';
 
 (function() {
   const app = new App();
-
-  getTextData()
-  .then(data => {
-    app.setTextData(data);
-    textDiv.innerHTML = showTextDataChunk();
+  let typingTest;
+  app.getData()
+  .then(res => {
+    typingTest = new TypingTest(app.getTextChunk());
+    showTextDataChunk();
   })
   .catch(error => error);
 
@@ -16,37 +16,42 @@ import { getTextData } from './api';
   const refreshButton = document.getElementById('refreshText');
   const results = document.getElementById('previous_result');
 
-  let spaceCount = 0;
-  let start = 0;
-
-  userInput.addEventListener('keyup', function(event) {
-    start = start ? start : Date.now();
-    if(event.keyCode === 32) {
-      spaceKeyupDisableCorrection(event);
+  function keyDownEvent(event) {
+    if(event.keyCode !== 27) {
+      typingTest.start();
+      userInput.removeEventListener('keydown', keyDownEvent);
     }
-  });
-
-  function spaceKeyupDisableCorrection(event) {
-    app.analyizeWord(userInput.value, spaceCount, Date.now() - start);
-    const span = textDiv.getElementsByClassName('word')[spaceCount];
-    span.setAttribute('class', span.getAttribute('class') + ' done');
-    userInput.value = '';
-    spaceCount++;
-    start = Date.now();
   }
 
-  refreshButton.addEventListener('click', function() {
-    start = 0;
-    spaceCount = 0;
+  function keyUpEvent(event) {
+    if(event.keyCode === 32) {
+      typingTest.newWord(userInput.value);
+      spaceKeyupDisableCorrection(event);
+    }
+  }
+
+  function endTestEvent(event) {
     showResults();
-    textDiv.innerHTML = showTextDataChunk();
-  });
+    typingTest = new TypingTest(app.getTextChunk());
+    showTextDataChunk();
+    userInput.addEventListener('keydown', keyDownEvent);
+  }
+
+  userInput.addEventListener('keydown', keyDownEvent);
+  userInput.addEventListener('keyup', keyUpEvent);
+  refreshButton.addEventListener('click', endTestEvent);
+
+  function spaceKeyupDisableCorrection() {
+    const span = textDiv.getElementsByClassName('word')[typingTest.getCurrentWordCount() - 1];
+    span.setAttribute('class', span.getAttribute('class') + ' done');
+    userInput.value = '';
+  }
 
   function showTextDataChunk() {
-    return app.getTextChunk().map(word => '<span class="word">' + word + '</span>').join(' ')
+    textDiv.innerHTML = app.getCurrentTextChunk().map(word => '<span class="word">' + word + '</span>').join(' ')
   }
 
   function showResults() {
-    results.innerHTML = '<pre>' + JSON.stringify(app.analyzePrevious()) + '</pre>';
+    results.innerHTML = '<pre>' + JSON.stringify(typingTest.analyze()) + '</pre>';
   }
 })();

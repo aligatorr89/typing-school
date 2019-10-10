@@ -1,4 +1,4 @@
-import { Analytics } from './analytics';
+import { getTextData } from './api';
 
 class App {
   constructor(language = 'en', mode = '', disableCorrection = true, excerciseType = '10fastfingers') {
@@ -6,8 +6,7 @@ class App {
     this.mode = mode;
     this.disableCorrection = disableCorrection;
     this.excerciseType = excerciseType;
-    this.textData = null;
-    this.analytics = new Analytics();
+    this.textData = [];
   };
 }
 App.prototype.getMode = function() {
@@ -32,13 +31,15 @@ App.prototype.getTextChunk = function() {
   this.currentChunkIndex = Math.round(Math.random() * 1000);
   return this.textData[this.currentChunkIndex];
 };
-App.prototype.analyizeWord = function(word, correctWordIndex, timeNeeded) {
-  var correctWord = this.textData[this.currentChunkIndex][correctWordIndex];
-  word = word.replace(' ', '');
-  this.analytics.insert(word, correctWord, timeNeeded);
+App.prototype.getCurrentTextChunk = function() {
+  return this.textData[this.currentChunkIndex] ? this.textData[this.currentChunkIndex] : [];
 };
-App.prototype.analyzePrevious = function() {
-  return this.analytics.analyzePrevious();
-}
-
+App.prototype.getData = function(cb) {
+  return getTextData()
+  .then(data => {
+    this.setTextData(data);
+    return true;
+  })
+  .catch(error => error)
+};
 export default App;

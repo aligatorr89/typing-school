@@ -34,7 +34,7 @@ App.prototype.getTextChunk = function() {
 App.prototype.getCurrentTextChunk = function() {
   return this.textData[this.currentChunkIndex] ? this.textData[this.currentChunkIndex] : [];
 };
-App.prototype.getData = function(cb) {
+App.prototype.getData = function() {
   return getTextData()
   .then(data => {
     this.setTextData(data);

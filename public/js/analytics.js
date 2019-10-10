@@ -19,13 +19,20 @@ export class Analytics {
     const result = {
       words: 0,
       timeNeeded: 0,
-      mistakes: 0
+      mistakes: 0,
+      failedWords: []
     };
     for(let i = 0; i < previous.length; i++) {
       const current = previous[i];
       result.words += 1;
       result.timeNeeded += current.timeNeeded ? current.timeNeeded : 0;
-      result.mistakes += current.word === current.correctWord && current.word ? 0 : 1;
+      if(current.word !== current.correctWord && current.word) {
+        result.failedWords.push({
+          correct: current.correctWord,
+          actual: current.word
+        });
+        result.mistakes += 1;
+      }
     }
     this.prevChunkStart = this.prevChunkEnd;
 

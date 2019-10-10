@@ -39,6 +39,7 @@ export class TypingTest {
     this.currentWordTimeCounter = newDate;
     this.wordCount++;
   }
+  
   analyze() {
     return analytics.analyzePrevious();
   }

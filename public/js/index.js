@@ -14,6 +14,7 @@ import { TypingTest } from './typing-test';
 
   const textDiv = document.getElementById('words');
   const userInput = document.getElementById('typing');
+  userInput.focus();
   const refreshButton = document.getElementById('refreshText');
   const results = document.getElementById('previous_result');
   const timer = document.getElementById('timer');
@@ -31,9 +32,12 @@ import { TypingTest } from './typing-test';
       typingTest.newWord(userInput.value);
       spaceKeyupDisableCorrection(event);
     }
+    else if(event.keyCode === 27) {
+      endTestEvent();
+    }
   }
 
-  function endTestEvent(event) {
+  function endTestEvent() {
     showResults();
     typingTest = new TypingTest(app.getTextChunk());
     showTextDataChunk();

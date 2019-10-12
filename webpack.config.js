@@ -2,7 +2,7 @@ const path = require('path');
 const environment = require('./environment');
 
 module.exports = {
-  mode: "production", // "production" | "development" | "none"
+  mode: "development", // "production" | "development" | "none"
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
   entry: path.join(environment.publicPath, "js"), // string | object | array
   // defaults to ./src

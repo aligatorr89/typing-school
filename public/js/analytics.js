@@ -50,4 +50,12 @@ export class Analytics {
     this.dbConnection.insertData('analytics', result);
     return result;
   }
+
+  getLast100Results() {
+    return this.dbConnection.getData('analytics')
+    .then(res => {
+      const startIndex = res.length < 101 ? 0 : res.length - 100;
+      return res.slice(startIndex, res.length).reverse();
+    });
+  }
 }

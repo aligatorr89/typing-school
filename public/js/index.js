@@ -1,5 +1,6 @@
 import App from './app';
 import { TypingTest } from './typing-test';
+import * as View from './view';
 
 (function() {
   const app = new App();
@@ -8,70 +9,53 @@ import { TypingTest } from './typing-test';
   app.getData()
   .then(res => {
     typingTest = new TypingTest(app.getTextChunk());
-    showTextDataChunk();
+    typingTest.getLast100Results().then(res => resultsView.setTable(res));
+    textView.set(app.getCurrentTextChunk());
   })
   .catch(error => error);
 
-  const textDiv = document.getElementById('words');
-  const userInput = document.getElementById('typing');
-  userInput.focus();
-  const refreshButton = document.getElementById('refreshText');
-  const results = document.getElementById('previous_result');
-  const timer = document.getElementById('timer');
+  const textView = new View.Text();
+  const userInputView = new View.UserInput(keyDownEventHandler, keyUpEventHandler);
+  const refreshButtonView = new View.RefreshButton();
+  const timerView = new View.Timer();
+  const resultsView = new View.Results();
 
-  function keyDownEvent(event) {
+  userInputView.node.focus();
+  userInputView.node.addEventListener('keydown', keyDownEventHandler);
+  userInputView.node.addEventListener('keyup', keyUpEventHandler);
+
+  refreshButtonView.node.addEventListener('click', endTestEventHandler);
+
+  function keyDownEventHandler(event) {
     if(event.keyCode !== 27) {
       typingTest.start();
-      userInput.removeEventListener('keydown', keyDownEvent);
-      showTimerInterval();
+      userInputView.node.removeEventListener('keydown', keyDownEventHandler);
+      timerView.set();
     }
   }
 
-  function keyUpEvent(event) {
+  function keyUpEventHandler(event) {
     if(event.keyCode === 32) {
-      typingTest.newWord(userInput.value);
+      typingTest.newWord(userInputView.node.value);
       spaceKeyupDisableCorrection(event);
     }
     else if(event.keyCode === 27) {
-      endTestEvent();
+      endTestEventHandler();
     }
   }
 
-  function endTestEvent() {
-    showResults();
-    typingTest = new TypingTest(app.getTextChunk());
-    showTextDataChunk();
-    deleteTimer();
-    userInput.addEventListener('keydown', keyDownEvent);
-  }
-
-  userInput.addEventListener('keydown', keyDownEvent);
-  userInput.addEventListener('keyup', keyUpEvent);
-  refreshButton.addEventListener('click', endTestEvent);
-
   function spaceKeyupDisableCorrection() {
-    const span = textDiv.getElementsByClassName('word')[typingTest.getCurrentWordCount() - 1];
-    span.setAttribute('class', span.getAttribute('class') + ' done');
-    userInput.value = '';
+    textView.addClassToSpanNthChild('done', typingTest.getCurrentWordCount());
+    userInputView.node.value = '';
   }
 
-  function showTextDataChunk() {
-    textDiv.innerHTML = app.getCurrentTextChunk().map(word => '<span class="word">' + word + '</span>').join(' ')
+  function endTestEventHandler() {
+    resultsView.prependToTable(typingTest.analyze());
+    typingTest = new TypingTest(app.getTextChunk());
+    timerView.unset();
+    textView.set(app.getCurrentTextChunk());
+    userInputView.node.value = '';
+    userInputView.node.addEventListener('keydown', keyDownEventHandler);
   }
 
-  function showResults() {
-    results.innerHTML = '<pre>' + JSON.stringify(typingTest.analyze()) + '</pre>';
-  }
-
-  let timerInterval;
-  function showTimerInterval() {
-    let seconds = 0;
-    timerInterval = setInterval(function() {
-        timer.innerText = ++seconds;
-    }, 1000);
-  }
-  function deleteTimer() {
-    clearInterval(timerInterval);
-    timer.innerText = 0;
-  }
 })();

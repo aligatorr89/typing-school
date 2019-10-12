@@ -16,12 +16,14 @@ export class Analytics {
   }
 
   analyzePrevious() {
-    this.prevChunkEnd = this.data.length - 1;
+    this.prevChunkEnd = this.data.length;
     const previous = this.data.slice(this.prevChunkStart, this.prevChunkEnd);
     const result = {
       words: 0,
       timeNeeded: 0,
       mistakes: 0,
+      correctWordCharacters: 0,
+      allWordCharacters: 0,
       failedWords: []
     };
     for(let i = 0; i < previous.length; i++) {
@@ -35,10 +37,16 @@ export class Analytics {
         });
         result.mistakes += 1;
       }
+      else {
+        result.correctWordCharacters += current.word.length + 1;
+      }
+      result.allWordCharacters += current.word.length + 1;
     }
     this.prevChunkStart = this.prevChunkEnd;
 
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
+    result.wpm_standard = Math.round(result.correctWordCharacters / 5
+      * (100 * 60000 / result.timeNeeded) / 100);
     this.dbConnection.insertData('analytics', result);
     return result;
   }

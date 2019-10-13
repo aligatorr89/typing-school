@@ -83,9 +83,11 @@ export class Results {
     this.tableNode = this.node.getElementsByClassName('results-table')[0];
   }
   prependToTable(resultRow) {
-    console.log(this.tableNode.children)
-    if(this.tableNode.children[1]) {
+    if(this.tableNode) {
       this.tableNode.children[1].prepend(getResultsTableRowNode(resultRow));
+    }
+    else {
+      this.setTable([resultRow]);
     }
   }
 }

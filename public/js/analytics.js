@@ -5,7 +5,7 @@ export class Analytics {
     this.data = [];
     this.prevChunkStart = 0;
     this.prevChunkEnd = 0;
-    this.dbConnection = new indexedDb();
+    this.idb = new indexedDb();
   }
 
   insert(word, correctWord, timeNeeded) {
@@ -47,15 +47,33 @@ export class Analytics {
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
     result.wpm_standard = Math.round(result.correctWordCharacters / 5
       * (100 * 60000 / result.timeNeeded) / 100);
-    this.dbConnection.insertData('analytics', result);
+    this.idb.insertData('analytics', result);
     return result;
   }
 
   getLast100Results() {
-    return this.dbConnection.getData('analytics')
-    .then(res => {
-      const startIndex = res.length < 101 ? 0 : res.length - 100;
-      return res.slice(startIndex, res.length).reverse();
+    return new Promise((resolve, reject) => {
+      const store = this.idb.getObjectStore('analytics');
+      var req = store.openCursor(null, 'prev');
+      const result = [];
+      let count = 0;
+      req.onsuccess = function () {
+        const cursor = req.result;
+        if(cursor && count < 100) {
+          if(cursor.value.words > 3) {
+            result.push(cursor.value);
+            count++;
+          }
+          cursor.continue();
+        }
+        else {
+          resolve(result);
+        }
+      };
+      req.onerror = function() {
+        console.log('IDB.getQuery() error', req.error);
+        reject(req.error);
+      };
     });
   }
 }

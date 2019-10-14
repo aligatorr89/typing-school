@@ -45,7 +45,8 @@ import * as View from './view';
   }
 
   function spaceKeyupDisableCorrection() {
-    textView.addClassToSpanNthChild('done', typingTest.getCurrentWordCount());
+    textView.highlightPrevious(typingTest.getCurrentWordCount() - 1);
+    textView.highlightCurrent(typingTest.getCurrentWordCount());
     userInputView.node.value = '';
   }
 

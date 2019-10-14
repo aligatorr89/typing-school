@@ -5,10 +5,20 @@ export class Text {
   }
   set(textChunk) {
     this.node.innerHTML = text(textChunk);
+    this.highlightCurrent(0);
   }
-  addClassToSpanNthChild(className, nthChild) {
-    const span = this.node.getElementsByClassName('word')[nthChild - 1];
-    span.setAttribute('class', span.getAttribute('class') + ' ' + className);
+
+  highlightCurrent(nthChild) {
+    const span = this.node.getElementsByClassName('word')[nthChild];
+    span.setAttribute('class', span.getAttribute('class') + ' ' + 'current');
+  }
+
+  highlightPrevious(nthChild) {
+    const span = this.node.getElementsByClassName('word')[nthChild];
+    const classes = span.getAttribute('class').split(' ');
+    classes.splice(classes.indexOf('current'), 1);
+    classes.push('done');
+    span.setAttribute('class', classes.join(' '));
   }
 }
 

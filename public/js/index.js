@@ -36,8 +36,12 @@ import * as View from './view';
 
   function keyUpEventHandler(event) {
     if(event.keyCode === 32) {
-      typingTest.newWord(userInputView.node.value);
-      spaceKeyupDisableCorrection(event);
+      const writtenWord = userInputView.node.value;
+      // spaceKeyupDisableCorrection(event);
+      textView.highlightPrevious(typingTest.getCurrentWordCount());
+      textView.highlightCurrent(typingTest.getCurrentWordCount() + 1);
+      userInputView.node.value = '';
+      typingTest.newWord(writtenWord);
     }
     else if(event.keyCode === 27) {
       endTestEventHandler();

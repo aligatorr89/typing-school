@@ -10,31 +10,39 @@ export type TypingSchoolDatabases = 'typing_school';
 export type TypingSchoolTables = 'analytics' | 'words';
 
 export default class IDB {
-  public db: IDBDatabase;
-  public idbKeyRange: IDBKeyRange;
-  public idbTransaction: IDBTransaction;
-  private idbFactory: IDBFactory;
-  constructor() {
-    this.idbFactory = window.indexedDB;
-    if (!this.idbFactory) {
-      console.error('Your browser doesn\'t support a stable version of IndexedDB. Some feature will not be available.');
+  static db: IDBDatabase;
+  static idbKeyRange: IDBKeyRange;
+  static idbTransaction: IDBTransaction;
+  private static idbFactory: IDBFactory;
+
+  public static get instance() {
+    if (this.db) {
+      return new Promise<IDBDatabase>((resolve, reject) => {
+        return this.db;
+      });
+    } else {
+      this.idbFactory = window.indexedDB;
+      if (!this.idbFactory) {
+        console.error('Your browser doesn\'t support a stable version of IndexedDB. Some feature will not be available.');
+      }
+      return getDbConnection(this.idbFactory)
+      .then((db) => this.db = db)
+      .catch((error) => error);
     }
-    getDbConnection(this.idbFactory)
-    .then((db) => this.db = db)
-    .catch((error) => error);
   }
-  public getObjectStore(table: TypingSchoolTables, mode: IDBTransactionMode) {
+
+  public static getObjectStore(table: TypingSchoolTables, mode: IDBTransactionMode) {
     return this.db.transaction(table, mode).objectStore(table);
   }
 
-  public insertData(table: TypingSchoolTables, row: any) {
+  public static insertData(table: TypingSchoolTables, row: any) {
     const store = this.getObjectStore(table, 'readwrite');
     const req = store.add(row);
     // req.onsuccess = (evt) => {};
     // req.onerror = () => {};
   }
 
-  public getData(table: TypingSchoolTables) {
+  public static getData(table: TypingSchoolTables) {
     const store = this.getObjectStore(table, 'readonly');
     const req = store.getAll();
 

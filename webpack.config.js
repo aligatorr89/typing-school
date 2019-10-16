@@ -4,10 +4,22 @@ const environment = require('./environment');
 module.exports = {
   mode: "development", // "production" | "development" | "none"
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
-  entry: path.join(environment.publicPath, "js"), // string | object | array
+  entry: path.join(environment.root, "src", "app"), // string | object | array
   // defaults to ./src
   // Here the application starts executing
   // and webpack starts bundling
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
   output: {
     // options related to how webpack emits results
     path: path.resolve(environment.root, "public", "js"), // string

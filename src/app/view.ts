@@ -1,3 +1,5 @@
+import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
+import IDB from './shared/IndexedDb';
 
 export class Text {
   node: HTMLElement;
@@ -108,6 +110,42 @@ export class Results {
     }
     else {
       this.setTable([resultRow]);
+    }
+  }
+}
+
+export class DownLoadResultsButton {
+  node: HTMLButtonElement;
+  idb: IDBDatabase;
+  constructor() {
+    this.node = this.findButton();
+    this.node.addEventListener('click', this.clickHandler);
+    this.clickHandler = this.clickHandler.bind(this);
+  }
+
+  private clickHandler(event: Event) {
+    console.log('DownLoadResultsButton.clickHandler');
+    IDBQueries.getAllData(IDB.db).then((data) => {
+      const element = document.createElement('a');
+
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
+      element.setAttribute('download', 'TypingSchoolData.json');
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    });
+  }
+
+  private findButton(): HTMLButtonElement {
+    const buttons = document.getElementsByTagName('button');
+    for(let i = 0; i < buttons.length; i++) {
+      if (buttons[i].getAttribute('name') === 'downloadResults') {
+        return buttons[i];
+      }
     }
   }
 }

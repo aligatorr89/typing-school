@@ -8,15 +8,18 @@ import * as View from './view';
 (function() {
   const app = new App();
   let typingTest;
-  IDB.instance.then((db) => {
-    app.getData()
-    .then(res => {
-      typingTest = new TypingTest(app.getTextChunk());
-      IDBQueries.getLast100Results(db).then(res => resultsView.setTable(res));
-      textView.set(app.getCurrentTextChunk());
-    })
-    .catch(error => error);
-  });
+  IDB.instance
+  .then((db) => {
+    IDBQueries.getLast100Results(db).then(res => resultsView.setTable(res));
+  })
+  .catch(error => console.log(error));
+
+  app.getData()
+  .then(res => {
+    typingTest = new TypingTest(app.getTextChunk());
+    textView.set(app.getCurrentTextChunk());
+  })
+  .catch(error => console.log(error));
   const analytics = new Analytics();
 
   const textView = new View.Text();

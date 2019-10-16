@@ -65,7 +65,6 @@ export class Analytics implements IAnalytics {
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);
     result.wpm_standard = Math.round(result.correctWordCharacters / 5
       * (100 * 60000 / result.timeNeeded) / 100);
-    // this.dbConnection.insertData('analytics', result);
     return result;
   }
 }

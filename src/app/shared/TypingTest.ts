@@ -5,7 +5,7 @@ export type ExcerciseType = '10fastfingers';
 
 export interface ITypingTest {
   wordCount: number;
-  text: string[];
+  text: TypingTestsType;
   startTime: number;
   currentWordTimeCounter: number;
 }
@@ -14,7 +14,7 @@ export class TypingTest {
   protected wordCount: number;
   protected startTime: number;
   protected currentWordTimeCounter: number;
-  private text: string[];
+  private text: TypingTestsType;
 
   constructor(textChunk: string[]) {
     this.wordCount = 0;

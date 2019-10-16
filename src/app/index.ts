@@ -61,7 +61,9 @@ import * as View from './view';
   }
 
   function endTestEventHandler() {
-    resultsView.prependToTable(analytics.analyzePrevious());
+    const analyticsResult = analytics.analyzePrevious();
+    resultsView.prependToTable(analyticsResult);
+    idb.insertData('analytics', analyticsResult);
     typingTest = new TypingTest(app.getTextChunk());
     timerView.unset();
     textView.set(app.getCurrentTextChunk());

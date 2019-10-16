@@ -8,6 +8,7 @@ class App {
   excerciseType: ExcerciseType;
   textData: TypingTestsType;
   currentChunkIndex: number;
+  currentTextChunk: string[];
   constructor(language: Language = 'en', mode: Mode = '', disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers') {
     this.language = language;
     this.mode = mode;
@@ -29,10 +30,11 @@ class App {
   };
   getTextChunk() {
     this.currentChunkIndex = Math.round(Math.random() * 1000);
-    return this.textData[this.currentChunkIndex].split('|');
+    this.currentTextChunk = this.textData[this.currentChunkIndex].split('|');
+    return this.currentTextChunk;
   };
   getCurrentTextChunk() {
-    return this.textData[this.currentChunkIndex] ? this.textData[this.currentChunkIndex].split('|') : [];
+    return this.currentTextChunk ? this.currentTextChunk : [];
   };
   getData() {
     return getTypingTests()

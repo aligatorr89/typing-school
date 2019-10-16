@@ -1,5 +1,6 @@
 export type TypingTestsType = string[];
 export type Language = 'en' | 'si';
+export const languages: Language[] = ['en', 'si'];
 export type Mode = '';
 export type ExcerciseType = '10fastfingers';
 

@@ -27,7 +27,8 @@ import * as View from './view';
   const refreshButtonView = new View.RefreshButton();
   const timerView = new View.Timer();
   const resultsView = new View.Results();
-  const downloadDataButton = new View.DownLoadResultsButton();
+  new View.DownLoadResultsButton();
+  new View.LanguageSelect()
 
   userInputView.node.focus();
   userInputView.node.addEventListener('keydown', keyDownEventHandler);

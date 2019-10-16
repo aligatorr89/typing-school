@@ -1,5 +1,6 @@
 import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
 import IDB from './shared/IndexedDb';
+import { Language, languages } from './shared/TypingTest';
 
 export class Text {
   node: HTMLElement;
@@ -124,7 +125,6 @@ export class DownLoadResultsButton {
   }
 
   private clickHandler(event: Event) {
-    console.log('DownLoadResultsButton.clickHandler');
     IDBQueries.getAllData(IDB.db).then((data) => {
       const element = document.createElement('a');
 
@@ -137,14 +137,44 @@ export class DownLoadResultsButton {
       element.click();
 
       document.body.removeChild(element);
-    });
+    })
+    .catch(error => console.log(error));
   }
 
   private findButton(): HTMLButtonElement {
     const buttons = document.getElementsByTagName('button');
     for(let i = 0; i < buttons.length; i++) {
       if (buttons[i].getAttribute('name') === 'downloadResults') {
+        buttons[i].name += appMarkBinded;
         return buttons[i];
+      }
+    }
+  }
+}
+
+export class LanguageSelect {
+  private static elementName: string = 'selectLanguage';
+  node: HTMLSelectElement;
+  constructor() {
+    this.node = this.findElement();
+    this.setOptions();
+  }
+
+  public setOptions() {
+    for(let i = 0; i < languages.length; i++) {
+      const option = document.createElement('option');
+      option.value = languages[i];
+      option.textContent = languages[i];
+      this.node.appendChild(option);
+    }
+  }
+
+  private findElement(): HTMLSelectElement {
+    const selects = document.getElementsByTagName('select');
+    for(let i = 0; i < selects.length; i++) {
+      if (selects[i].name === LanguageSelect.elementName) {
+        selects[i].name += appMarkBinded;
+        return selects[i];
       }
     }
   }
@@ -197,3 +227,5 @@ function text(textChunk) {
   }
   return html;
 }
+
+export const appMarkBinded = ' ra-b';

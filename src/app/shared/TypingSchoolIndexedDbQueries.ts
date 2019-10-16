@@ -1,6 +1,6 @@
 import { IAnalyticsResult } from './AnalyticsResult';
 
-export function getLast100Results(idb: IDBDatabase) {
+export function getLast100Results(idb: IDBDatabase): Promise<IAnalyticsResult[]> {
   return new Promise((resolve, reject) => {
     const store = idb.transaction('analytics', 'readonly').objectStore('analytics');
 
@@ -27,8 +27,8 @@ export function getLast100Results(idb: IDBDatabase) {
   });
 }
 
-export function getAllData(idb: IDBDatabase) {
-  return new Promise<IAnalyticsResult[]>((resolve, reject) => {
+export function getAllData(idb: IDBDatabase): Promise<IAnalyticsResult[]> {
+  return new Promise((resolve, reject) => {
     const store = idb.transaction('analytics', 'readonly').objectStore('analytics');
 
     var req: IDBRequest<IAnalyticsResult[]> = store.getAll();

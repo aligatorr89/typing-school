@@ -6,6 +6,8 @@
 // This line should only be needed if it is needed to support the object's constants for older browsers
 // const idbKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
+export const noSupportForindexedDBMessage =
+  'Your browser doesn\'t support a stable version of IndexedDB. Some feature will not be available.';
 export type TypingSchoolDatabases = 'typing_school';
 export type TypingSchoolTables = 'analytics' | 'words';
 
@@ -15,16 +17,13 @@ export default class IDB {
   static idbTransaction: IDBTransaction;
   private static idbFactory: IDBFactory;
 
-  public static get instance() {
+  public static get instance(): Promise<IDBDatabase> {
     if (this.db) {
       return new Promise<IDBDatabase>((resolve, reject) => {
-        return this.db;
+        resolve(this.db);
       });
     } else {
       this.idbFactory = window.indexedDB;
-      if (!this.idbFactory) {
-        console.error('Your browser doesn\'t support a stable version of IndexedDB. Some feature will not be available.');
-      }
       return getDbConnection(this.idbFactory)
       .then((db) => this.db = db)
       .catch((error) => error);
@@ -58,6 +57,10 @@ export default class IDB {
 }
 
 function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
+  if (!idb) {
+    console.error(noSupportForindexedDBMessage);
+    return new Promise((resolve, reject) => reject(noSupportForindexedDBMessage));
+  }
   const request = idb.open('typing_school', 5);
 
   return new Promise((resolve, reject) => {

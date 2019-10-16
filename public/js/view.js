@@ -8,17 +8,17 @@ export class Text {
     this.highlightCurrent(0);
   }
 
+  nextWordHighlight(nthChild) {
+    this.node.getElementsByClassName('word')[nthChild].classList.replace('current', 'done');
+    this.node.getElementsByClassName('word')[nthChild + 1].classList.add('current');
+  }
+
   highlightCurrent(nthChild) {
-    const span = this.node.getElementsByClassName('word')[nthChild];
-    span.setAttribute('class', span.getAttribute('class') + ' ' + 'current');
+    this.node.getElementsByClassName('word')[nthChild].classList.add('current');
   }
 
   highlightPrevious(nthChild) {
-    const span = this.node.getElementsByClassName('word')[nthChild];
-    const classes = span.getAttribute('class').split(' ');
-    classes.splice(classes.indexOf('current'), 1);
-    classes.push('done');
-    span.setAttribute('class', classes.join(' '));
+    this.node.getElementsByClassName('word')[nthChild].classList.replace('current', 'done');
   }
 }
 

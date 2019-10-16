@@ -38,8 +38,7 @@ import * as View from './view';
     if(event.keyCode === 32) {
       const writtenWord = userInputView.node.value;
       // spaceKeyupDisableCorrection(event);
-      textView.highlightPrevious(typingTest.getCurrentWordCount());
-      textView.highlightCurrent(typingTest.getCurrentWordCount() + 1);
+      textView.nextWordHighlight(typingTest.getCurrentWordCount());
       userInputView.node.value = '';
       typingTest.newWord(writtenWord);
     }

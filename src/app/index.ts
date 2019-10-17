@@ -31,6 +31,7 @@ import * as View from './view';
   const resultsView = new View.Results();
   const downloadButtonView = new View.DownLoadResultsButton();
   const languageSelectView = new View.LanguageSelect(app.setLanguage);
+  const modeSelectView = new View.ModeSelect(app.setMode);
 
   userInputView.node.focus();
   userInputView.node.addEventListener('keydown', keyDownEventHandler);
@@ -39,6 +40,7 @@ import * as View from './view';
   refreshButtonView.node.addEventListener('click', endTestEventHandler);
 
   app.node.addEventListener('setLanguage', endTestEventHandler);
+  app.node.addEventListener('setMode', endTestEventHandler);
 
   function keyDownEventHandler(event) {
     if (event.keyCode !== 27) {

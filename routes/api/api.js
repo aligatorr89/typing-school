@@ -4,15 +4,24 @@ const url = require('url');
 
 function get(req, res) {
   const options = querystring.parse(url.parse(req.url).query);
-  options.language = options.language ? options.language : 'en';
 
-  fs.createReadStream(getFileName(options.language))
+  fs.createReadStream(getFileName(options.language, options.mode))
   .pipe(res)
   .on('error', () => res.end());
 }
 
-function getFileName(language) {
-  return './10_fast_fingers_database_' + language + '_advanced.txt'
+function getFileName(language, mode) {
+  if (mode) {
+    if (mode === '200') {
+      mode = '';
+    } else if (mode === '1000') {
+      mode = '_advanced';
+    }
+  } else {
+    mode = '_advanced'
+  }
+
+  return './10_fast_fingers_database_' + language + mode + '.txt'
 }
 
 module.exports = {

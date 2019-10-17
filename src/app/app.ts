@@ -3,7 +3,7 @@ import { ExcerciseType, Language, Mode, TypingTest, TypingTestsType } from './sh
 
 class App {
   public node: HTMLElement;
-  protected language: string;
+  protected language: Language;
   protected mode: Mode;
   protected disableCorrection: boolean;
   protected excerciseType: ExcerciseType;
@@ -21,17 +21,20 @@ class App {
     this.excerciseType = excerciseType;
     this.textData = [];
     this.setLanguage = this.setLanguage.bind(this);
+    this.setMode = this.setMode.bind(this);
   }
 
   public setMode(mode: Mode) {
     this.mode = mode;
+    this.getData(this.language, mode)
+    .then((res) => this.node.dispatchEvent(new Event('setMode')));
   }
   get currentLanguage() {
     return this.language;
   }
   public setLanguage(language: Language) {
     this.language = language;
-    this.getData(language)
+    this.getData(language, this.mode)
     .then((res) => this.node.dispatchEvent(new Event('setLanguage')));
   }
   public newTextChunk() {
@@ -42,8 +45,8 @@ class App {
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
   }
-  public getData(language: Language = 'en') {
-    return getTypingTests(language)
+  public getData(language: Language = 'en', mode: Mode = '') {
+    return getTypingTests(language, mode)
     .then((data) => {
       this.textData = data.split('\n');
       return data;

@@ -1,3 +1,7 @@
+
+export const analyticsResultsKeys = ['id', 'words', 'timeNeeded', 'mistakes',
+'correctWordCharacters', 'allWordCharacters', 'failedWords', 'wpm', 'wpm_standard'];
+
 export interface IAnalyticsResult {
   textId: number;
   words: number;

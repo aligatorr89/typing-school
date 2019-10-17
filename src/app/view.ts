@@ -1,6 +1,7 @@
 import IDB from './shared/IndexedDb';
 import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
-import { Language, languages } from './shared/TypingTest';
+import { Language, languages, Mode, modes } from './shared/TypingTest';
+import * as ViewHelp from './shared/ViewHelp';
 
 export class Text {
   protected node: HTMLElement;
@@ -8,7 +9,7 @@ export class Text {
       this.node = document.getElementById('words');
   }
   public set(textChunk) {
-    this.node.innerHTML = text(textChunk);
+    this.node.innerHTML = ViewHelp.getTextChunk(textChunk);
     this.highlightCurrent(0);
   }
 
@@ -102,12 +103,12 @@ export class Results {
     this.node = document.getElementById('last_100_results');
   }
   public setTable(data) {
-    this.node.append(getResultsTable(data));
+    this.node.append(ViewHelp.getAnalyticsResultsTable(data));
     this.tableNode = this.node.getElementsByClassName('results-table')[0];
   }
   public prependToTable(resultRow) {
     if (this.tableNode) {
-      this.tableNode.children[1].prepend(getResultsTableRowNode(resultRow));
+      this.tableNode.children[1].prepend(ViewHelp.getAnalyticsResultsTableRowNode(resultRow));
     } else {
       this.setTable([resultRow]);
     }
@@ -154,89 +155,37 @@ export class DownLoadResultsButton {
 
 export class LanguageSelect {
   private static elementName: string = 'selectLanguage';
-  public moduleNode: HTMLElement;
   public setLanguage: any;
   protected node: HTMLSelectElement;
   constructor(setLanguage: (lang: Language) => void) {
-    this.node = this.findElement();
+    this.node = ViewHelp.findSelectElement(LanguageSelect.elementName);
     this.setLanguage = setLanguage;
-    this.setOptions();
+    ViewHelp.setSelectElementOptions(this.node, languages);
     this.clickEventHandler = this.clickEventHandler.bind(this);
     this.node.addEventListener('change', this.clickEventHandler);
-  }
-
-  public setOptions() {
-    for (let i = 0; i < languages.length; i++) {
-      const option = document.createElement('option');
-      option.value = languages[i];
-      option.textContent = languages[i];
-      this.node.appendChild(option);
-    }
   }
 
   public clickEventHandler() {
     this.setLanguage(this.node.value);
   }
-
-  private findElement(): HTMLSelectElement {
-    const selects = document.getElementsByTagName('select');
-    for (let i = 0; i < selects.length; i++) {
-      if (selects[i].name === LanguageSelect.elementName) {
-        selects[i].name += appMarkBinded;
-        return selects[i];
-      }
-    }
-  }
 }
 
-const resultsTableKeys = ['id', 'words', 'timeNeeded', 'mistakes',
-'correctWordCharacters', 'allWordCharacters', 'failedWords', 'wpm', 'wpm_standard'];
-function getResultsTable(data) {
-  const node = document.createElement('table');
-  node.setAttribute('class', 'results-table');
-  let table = '<thead><tr>';
-  for (let i = 0; i < resultsTableKeys.length; i++) {
-    table += '<th class="text-center border">' + resultsTableKeys[i] + '</th>';
-  }
-  table += '</thead></tr><tbody>';
-  if (!Array.isArray(data)) {
-    return '';
+export class ModeSelect {
+  private static elementName: string = 'selectMode';
+  public setMode: any;
+  protected node: HTMLSelectElement;
+  constructor(setMode: (mode: Mode) => void) {
+    this.node = ViewHelp.findSelectElement(ModeSelect.elementName);
+    this.node.style.display = '';
+    this.setMode = setMode;
+    ViewHelp.setSelectElementOptions(this.node, modes);
+    this.clickEventHandler = this.clickEventHandler.bind(this);
+    this.node.addEventListener('change', this.clickEventHandler);
   }
 
-  for (let i = 0; i < data.length; i++) {
-    table += resultsTableRow(data[i]);
+  public clickEventHandler() {
+    this.setMode(this.node.value);
   }
-  table += '</tbody>';
-  node.innerHTML = table;
-  return node;
-}
-
-function resultsTableRow(row) {
-  let tr = '<tr class="text-center">';
-  for (let j = 0; j < resultsTableKeys.length; j++) {
-    tr += '<td class="border">' + JSON.stringify(row[resultsTableKeys[j]]) + '</td>';
-  }
-  tr += '</tr>';
-  return tr;
-}
-
-function getResultsTableRowNode(row) {
-  const tr = document.createElement('tr');
-  tr.className = 'text-center';
-  let str = '';
-  for (let j = 0; j < resultsTableKeys.length; j++) {
-    str += '<td class="border">' + JSON.stringify(row[resultsTableKeys[j]]) + '</td>';
-  }
-  tr.innerHTML = str;
-  return tr;
-}
-
-function text(textChunk) {
-  let html = '';
-  for (let i = 0; i < textChunk.length; i++) {
-    html += '<span class="word">' + textChunk[i] + '&nbsp;</span> ';
-  }
-  return html;
 }
 
 export const appMarkBinded = ' ra-b';

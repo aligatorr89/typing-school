@@ -154,10 +154,15 @@ export class DownLoadResultsButton {
 
 export class LanguageSelect {
   private static elementName: string = 'selectLanguage';
+  public moduleNode: HTMLElement;
+  public setLanguage: any;
   protected node: HTMLSelectElement;
-  constructor() {
+  constructor(setLanguage: (lang: Language) => void) {
     this.node = this.findElement();
+    this.setLanguage = setLanguage;
     this.setOptions();
+    this.clickEventHandler = this.clickEventHandler.bind(this);
+    this.node.addEventListener('change', this.clickEventHandler);
   }
 
   public setOptions() {
@@ -167,6 +172,10 @@ export class LanguageSelect {
       option.textContent = languages[i];
       this.node.appendChild(option);
     }
+  }
+
+  public clickEventHandler() {
+    this.setLanguage(this.node.value);
   }
 
   private findElement(): HTMLSelectElement {

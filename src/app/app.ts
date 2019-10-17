@@ -2,6 +2,7 @@ import { getTypingTests } from './shared/Api';
 import { ExcerciseType, Language, Mode, TypingTest, TypingTestsType } from './shared/TypingTest';
 
 class App {
+  public node: HTMLElement;
   protected language: string;
   protected mode: Mode;
   protected disableCorrection: boolean;
@@ -13,21 +14,25 @@ class App {
     language: Language = 'en', mode: Mode = '',
     disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers'
   ) {
+    this.node = document.getElementById('app');
     this.language = language;
     this.mode = mode;
     this.disableCorrection = disableCorrection;
     this.excerciseType = excerciseType;
     this.textData = [];
+    this.setLanguage = this.setLanguage.bind(this);
   }
 
-  set newMode(mode) {
+  public setMode(mode: Mode) {
     this.mode = mode;
   }
   get currentLanguage() {
     return this.language;
   }
-  set newLanguage(language) {
+  public setLanguage(language: Language) {
     this.language = language;
+    this.getData(language)
+    .then((res) => this.node.dispatchEvent(new Event('setLanguage')));
   }
   public newTextChunk() {
     this.currentChunkIndex = Math.round(Math.random() * 1000);
@@ -37,11 +42,11 @@ class App {
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
   }
-  public getData() {
-    return getTypingTests()
+  public getData(language: Language = 'en') {
+    return getTypingTests(language)
     .then((data) => {
       this.textData = data.split('\n');
-      return true;
+      return data;
     })
     .catch((error) => error);
   }

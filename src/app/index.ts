@@ -30,13 +30,15 @@ import * as View from './view';
   const timerView = new View.Timer();
   const resultsView = new View.Results();
   const downloadButtonView = new View.DownLoadResultsButton();
-  const languageSelectView = new View.LanguageSelect();
+  const languageSelectView = new View.LanguageSelect(app.setLanguage);
 
   userInputView.node.focus();
   userInputView.node.addEventListener('keydown', keyDownEventHandler);
   userInputView.node.addEventListener('keyup', keyUpEventHandler);
 
   refreshButtonView.node.addEventListener('click', endTestEventHandler);
+
+  app.node.addEventListener('setLanguage', endTestEventHandler);
 
   function keyDownEventHandler(event) {
     if (event.keyCode !== 27) {

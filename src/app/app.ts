@@ -1,5 +1,5 @@
 import { getTypingTests } from './shared/Api';
-import { TypingTest, Language, Mode, ExcerciseType, TypingTestsType } from './shared/TypingTest';
+import { ExcerciseType, Language, Mode, TypingTest, TypingTestsType } from './shared/TypingTest';
 
 class App {
   protected language: string;
@@ -9,38 +9,41 @@ class App {
   protected textData: TypingTestsType;
   protected currentChunkIndex: number;
   protected currentTextChunk: string[];
-  constructor(language: Language = 'en', mode: Mode = '', disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers') {
+  constructor(
+    language: Language = 'en', mode: Mode = '',
+    disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers'
+  ) {
     this.language = language;
     this.mode = mode;
     this.disableCorrection = disableCorrection;
     this.excerciseType = excerciseType;
     this.textData = [];
-  };
+  }
 
   set newMode(mode) {
     this.mode = mode;
-  };
+  }
   get currentLanguage() {
     return this.language;
-  };
+  }
   set newLanguage(language) {
     this.language = language;
-  };
-  newTextChunk() {
+  }
+  public newTextChunk() {
     this.currentChunkIndex = Math.round(Math.random() * 1000);
     this.currentTextChunk = this.textData[this.currentChunkIndex].split('|');
     return this.currentTextChunk;
-  };
+  }
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
-  };
-  getData() {
+  }
+  public getData() {
     return getTypingTests()
-    .then(data => {
+    .then((data) => {
       this.textData = data.split('\n');
       return true;
     })
-    .catch(error => error)
-  };
+    .catch((error) => error);
+  }
 }
 export default App;

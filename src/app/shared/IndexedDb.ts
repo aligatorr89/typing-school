@@ -12,10 +12,9 @@ export type TypingSchoolDatabases = 'typing_school';
 export type TypingSchoolTables = 'analytics' | 'words';
 
 export default class IDB {
-  static db: IDBDatabase;
-  static idbKeyRange: IDBKeyRange;
-  static idbTransaction: IDBTransaction;
-  private static idbFactory: IDBFactory;
+  public static db: IDBDatabase;
+  public static idbKeyRange: IDBKeyRange;
+  public static idbTransaction: IDBTransaction;
 
   public static get instance(): Promise<IDBDatabase> {
     if (this.db) {
@@ -54,6 +53,8 @@ export default class IDB {
       };
     });
   }
+
+  private static idbFactory: IDBFactory;
 }
 
 function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {

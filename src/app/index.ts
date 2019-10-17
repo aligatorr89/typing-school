@@ -1,25 +1,27 @@
 import App from './app';
-import { TypingTest } from './shared/TypingTest';
 import { Analytics } from './shared/Analytics';
+import { TypingTest } from './shared/TypingTest';
+
 import IDB from './shared/IndexedDb';
 import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
 import * as View from './view';
 
-(function() {
+(() => {
   const app = new App();
   const typingTest = new TypingTest();
   IDB.instance
   .then((db) => {
-    IDBQueries.getLast100Results(db).then(res => resultsView.setTable(res));
+    IDBQueries.getLast100Results(db)
+    .then((res) => resultsView.setTable(res));
   })
-  .catch(error => console.log(error));
+  .catch((error) => console.log(error));
 
   app.getData()
-  .then(res => {
+  .then(() => {
     typingTest.setNew(app.newTextChunk());
     textView.set(app.textChunk);
   })
-  .catch(error => console.log(error));
+  .catch((error) => console.log(error));
   const analytics = new Analytics();
 
   const textView = new View.Text();
@@ -27,8 +29,8 @@ import * as View from './view';
   const refreshButtonView = new View.RefreshButton();
   const timerView = new View.Timer();
   const resultsView = new View.Results();
-  new View.DownLoadResultsButton();
-  new View.LanguageSelect()
+  const downloadButtonView = new View.DownLoadResultsButton();
+  const languageSelectView = new View.LanguageSelect();
 
   userInputView.node.focus();
   userInputView.node.addEventListener('keydown', keyDownEventHandler);
@@ -37,7 +39,7 @@ import * as View from './view';
   refreshButtonView.node.addEventListener('click', endTestEventHandler);
 
   function keyDownEventHandler(event) {
-    if(event.keyCode !== 27) {
+    if (event.keyCode !== 27) {
       typingTest.start();
       userInputView.node.removeEventListener('keydown', keyDownEventHandler);
       timerView.set();
@@ -45,7 +47,7 @@ import * as View from './view';
   }
 
   function keyUpEventHandler(event) {
-    if(event.keyCode === 32) {
+    if (event.keyCode === 32) {
       const writtenWord = userInputView.node.value;
       const nowDate = Date.now();
       // spaceKeyupDisableCorrection(event);
@@ -53,8 +55,7 @@ import * as View from './view';
       userInputView.node.value = '';
       analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime);
       typingTest.nextWord(writtenWord, nowDate);
-    }
-    else if(event.keyCode === 27) {
+    } else if (event.keyCode === 27) {
       endTestEventHandler();
     }
   }

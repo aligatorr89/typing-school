@@ -7,7 +7,7 @@ import * as View from './view';
 
 (function() {
   const app = new App();
-  let typingTest;
+  const typingTest = new TypingTest();
   IDB.instance
   .then((db) => {
     IDBQueries.getLast100Results(db).then(res => resultsView.setTable(res));
@@ -16,8 +16,8 @@ import * as View from './view';
 
   app.getData()
   .then(res => {
-    typingTest = new TypingTest(app.getTextChunk());
-    textView.set(app.getCurrentTextChunk());
+    typingTest.setNew(app.newTextChunk());
+    textView.set(app.textChunk);
   })
   .catch(error => console.log(error));
   const analytics = new Analytics();
@@ -49,9 +49,9 @@ import * as View from './view';
       const writtenWord = userInputView.node.value;
       const nowDate = Date.now();
       // spaceKeyupDisableCorrection(event);
-      textView.nextWordHighlight(typingTest.getCurrentWordCount());
+      textView.nextWordHighlight(typingTest.currentWordCount);
       userInputView.node.value = '';
-      analytics.insert(writtenWord, typingTest.getCurrentWord(), nowDate - typingTest.currentWordTimeCounter);
+      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime);
       typingTest.nextWord(writtenWord, nowDate);
     }
     else if(event.keyCode === 27) {
@@ -60,8 +60,8 @@ import * as View from './view';
   }
 
   function spaceKeyupDisableCorrection() {
-    textView.highlightPrevious(typingTest.getCurrentWordCount() - 1);
-    textView.highlightCurrent(typingTest.getCurrentWordCount());
+    textView.highlightPrevious(typingTest.currentWordCount - 1);
+    textView.highlightCurrent(typingTest.currentWordCount);
     userInputView.node.value = '';
   }
 
@@ -69,9 +69,9 @@ import * as View from './view';
     const analyticsResult = analytics.analyzePrevious();
     resultsView.prependToTable(analyticsResult);
     IDB.insertData('analytics', analyticsResult);
-    typingTest = new TypingTest(app.getTextChunk());
+    typingTest.setNew(app.newTextChunk());
     timerView.unset();
-    textView.set(app.getCurrentTextChunk());
+    textView.set(app.textChunk);
     userInputView.node.value = '';
     userInputView.node.addEventListener('keydown', keyDownEventHandler);
   }

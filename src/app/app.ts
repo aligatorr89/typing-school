@@ -2,13 +2,13 @@ import { getTypingTests } from './shared/Api';
 import { TypingTest, Language, Mode, ExcerciseType, TypingTestsType } from './shared/TypingTest';
 
 class App {
-  language: string;
-  mode: Mode;
-  disableCorrection: boolean;
-  excerciseType: ExcerciseType;
-  textData: TypingTestsType;
-  currentChunkIndex: number;
-  currentTextChunk: string[];
+  protected language: string;
+  protected mode: Mode;
+  protected disableCorrection: boolean;
+  protected excerciseType: ExcerciseType;
+  protected textData: TypingTestsType;
+  protected currentChunkIndex: number;
+  protected currentTextChunk: string[];
   constructor(language: Language = 'en', mode: Mode = '', disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers') {
     this.language = language;
     this.mode = mode;
@@ -16,24 +16,22 @@ class App {
     this.excerciseType = excerciseType;
     this.textData = [];
   };
-  getMode() {
-    return this.mode;
-  };
-  setMode(mode) {
+
+  set newMode(mode) {
     this.mode = mode;
   };
-  getLanguage() {
+  get currentLanguage() {
     return this.language;
   };
-  setLanguage(language) {
+  set newLanguage(language) {
     this.language = language;
   };
-  getTextChunk() {
+  newTextChunk() {
     this.currentChunkIndex = Math.round(Math.random() * 1000);
     this.currentTextChunk = this.textData[this.currentChunkIndex].split('|');
     return this.currentTextChunk;
   };
-  getCurrentTextChunk() {
+  get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
   };
   getData() {

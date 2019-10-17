@@ -14,42 +14,46 @@ export interface ITypingTest {
 export class TypingTest {
   protected wordCount: number;
   protected startTime: number;
-  protected currentWordTimeCounter: number;
-  private text: TypingTestsType;
+  protected currentWordTimeStart: number;
+  protected text: TypingTestsType;
 
-  constructor(textChunk: string[]) {
+  constructor() {
+    this.wordCount = 0;
+  }
+
+  public setNew(textChunk: string[]) {
     this.wordCount = 0;
     this.text = textChunk;
   }
 
   public start() {
-    this.setStartTime();
+    this.startTime = Date.now();
+    this.currentWordTimeStart = this.startTime;
   }
 
   public pause() {
     // console.log('pausing...');
   }
 
-  public setStartTime() {
-    this.startTime = Date.now();
-    this.currentWordTimeCounter = this.startTime;
-  }
-
-  public getTimePassed() {
+  public get timePassed() {
     return Date.now() - this.startTime;
   }
 
-  public getCurrentWord() {
+  public get currentWord() {
     return this.text[this.wordCount];
   }
 
-  public getCurrentWordCount() {
+  public get currentWordCount() {
     return this.wordCount;
+  }
+
+  public get currentWordTime() {
+    return this.currentWordTimeStart;
   }
 
   public nextWord(typedWord: string, nowDate: number) {
     // analytics.insert(typedWord, this.text[this.wordCount], newDate - this.currentWordTimeCounter);
-    this.currentWordTimeCounter = nowDate;
+    this.currentWordTimeStart = nowDate;
     this.wordCount++;
   }
 

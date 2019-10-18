@@ -1,8 +1,8 @@
 export type TypingTestsType = string[];
 export type Language = 'en' | 'si';
 export const languages: Language[] = ['en', 'si'];
-export type Mode = '' | '200' | '1000';
-export const modes: Mode[] = ['', '200', '1000'];
+export type Mode = '200' | '1000';
+export const modes: Mode[] = ['200', '1000'];
 
 export type ExcerciseType = '10fastfingers';
 

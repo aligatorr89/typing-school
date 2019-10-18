@@ -1,3 +1,4 @@
+import { IAppSettings } from '../app';
 import { AnalyticsResult } from './AnalyticsResult';
 
 export interface IAnalytics {
@@ -33,18 +34,18 @@ export class Analytics implements IAnalytics {
     });
   }
 
-  public analyzePrevious() {
+  public analyzePrevious(appSettings: IAppSettings) {
     this.prevChunkEnd = this.data.length;
     const previous = this.data.slice(this.prevChunkStart, this.prevChunkEnd);
-    return this.analyze(previous);
+    return this.analyze(previous, appSettings);
   }
 
-  public analyzeAll() {
-    return this.analyze(this.data);
+  public analyzeAll(appSettings: IAppSettings) {
+    return this.analyze(this.data, appSettings);
   }
 
-  private analyze(dataChunk: IAnalyticsData[]) {
-    const result = new AnalyticsResult();
+  private analyze(dataChunk: IAnalyticsData[], appSettings: IAppSettings) {
+    const result = new AnalyticsResult(appSettings);
     for (let i = 0; i < dataChunk.length; i++) {
       const current = dataChunk[i];
       result.words += 1;

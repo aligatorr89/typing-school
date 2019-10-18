@@ -1,4 +1,4 @@
-import App from './app';
+import App, { appSettingsInitialState, IAppSettings } from './app';
 import { Analytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 
@@ -11,7 +11,7 @@ import * as View from './view';
   const typingTest = new TypingTest();
   IDB.instance
   .then((db) => {
-    IDBQueries.getLast100Results(db)
+    IDBQueries.getLast100Results(db, app.currentSettings)
     .then((res) => resultsView.setTable(res));
   })
   .catch((error) => console.log(error));
@@ -39,8 +39,16 @@ import * as View from './view';
 
   refreshButtonView.node.addEventListener('click', endTestEventHandler);
 
-  app.node.addEventListener('setLanguage', endTestEventHandler);
-  app.node.addEventListener('setMode', endTestEventHandler);
+  app.node.addEventListener('setLanguage', changeSettings);
+  app.node.addEventListener('setMode', changeSettings);
+
+  function changeSettings() {
+    IDBQueries.getLast100Results(IDB.db, app.currentSettings)
+    .then((res) => {
+      endTestEventHandler();
+      resultsView.replaceTable(res);
+    });
+  }
 
   function keyDownEventHandler(event) {
     if (event.keyCode !== 27) {
@@ -71,7 +79,7 @@ import * as View from './view';
   }
 
   function endTestEventHandler() {
-    const analyticsResult = analytics.analyzePrevious();
+    const analyticsResult = analytics.analyzePrevious(app.currentSettings);
     resultsView.prependToTable(analyticsResult);
     IDB.insertData('analytics', analyticsResult);
     typingTest.setNew(app.newTextChunk());

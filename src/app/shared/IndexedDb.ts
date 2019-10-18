@@ -62,7 +62,7 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
     console.error(noSupportForindexedDBMessage);
     return new Promise((resolve, reject) => reject(noSupportForindexedDBMessage));
   }
-  const request = idb.open('typing_school', 8);
+  const request = idb.open('typing_school', 9);
 
   return new Promise((resolve, reject) => {
     request.onerror = (event) => {
@@ -106,6 +106,18 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
 
       if (store.indexNames.contains('failedWords')) {
         store.createIndex('failedWords', 'failedWords', { unique: false });
+      }
+
+      if (store.indexNames.contains('language')) {
+        store.createIndex('language', 'language', { unique: false });
+      }
+
+      if (store.indexNames.contains('mode')) {
+        store.createIndex('mode', 'mode', { unique: false });
+      }
+
+      if (store.indexNames.contains('excerciseType')) {
+        store.createIndex('excerciseType', 'excerciseType', { unique: false });
       }
 
       db.onversionchange = () => {

@@ -9,7 +9,7 @@ export interface IAppSettings {
 
 export const appSettingsInitialState: IAppSettings = {
   language: 'en',
-  mode:  '',
+  mode:  '200',
   excerciseType: '10fastfingers'
 };
 
@@ -27,9 +27,13 @@ class App {
     this.setMode = this.setMode.bind(this);
   }
 
+  get currentSettings(): IAppSettings {
+    return this.settings;
+  }
+
   public setMode(mode: Mode) {
     this.settings.mode = mode;
-    this.getData(this.settings.language, mode)
+    this.getData(this.settings)
     .then((res) => this.node.dispatchEvent(new Event('setMode')));
   }
   get currentLanguage() {
@@ -37,7 +41,7 @@ class App {
   }
   public setLanguage(language: Language) {
     this.settings.language = language;
-    this.getData(language, this.settings.mode)
+    this.getData(this.settings)
     .then((res) => this.node.dispatchEvent(new Event('setLanguage')));
   }
   public newTextChunk() {
@@ -48,8 +52,8 @@ class App {
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
   }
-  public getData(language: Language = 'en', mode: Mode = '') {
-    return getTypingTests(language, mode)
+  public getData(settings: IAppSettings = this.currentSettings) {
+    return getTypingTests(settings.language, settings.mode)
     .then((data) => {
       this.textData = data.split('\n');
       return data;

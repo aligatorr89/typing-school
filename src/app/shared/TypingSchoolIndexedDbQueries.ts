@@ -1,6 +1,8 @@
+import { appSettingsInitialState, IAppSettings } from '../app';
 import { IAnalyticsResult } from './AnalyticsResult';
 
-export function getLast100Results(idb: IDBDatabase): Promise<IAnalyticsResult[]> {
+export function getLast100Results(
+  idb: IDBDatabase, appSettings: IAppSettings = appSettingsInitialState): Promise<IAnalyticsResult[]> {
   return new Promise((resolve, reject) => {
     const store = idb.transaction('analytics', 'readonly').objectStore('analytics');
 
@@ -10,7 +12,8 @@ export function getLast100Results(idb: IDBDatabase): Promise<IAnalyticsResult[]>
     req.onsuccess = () => {
       const cursor = req.result;
       if (cursor && count < 100) {
-        if (cursor.value.words > 3) {
+        const o: IAnalyticsResult = cursor.value;
+        if (o.language === appSettings.language && o.mode === appSettings.mode && o.words > 3) {
           result.push(cursor.value);
           count++;
         }

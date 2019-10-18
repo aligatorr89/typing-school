@@ -106,6 +106,10 @@ export class Results {
     this.node.append(ViewHelp.getAnalyticsResultsTable(data));
     this.tableNode = this.node.getElementsByClassName('results-table')[0];
   }
+  public replaceTable(data) {
+    this.node.removeChild(this.tableNode);
+    this.setTable(data);
+  }
   public prependToTable(resultRow) {
     if (this.tableNode) {
       this.tableNode.children[1].prepend(ViewHelp.getAnalyticsResultsTableRowNode(resultRow));

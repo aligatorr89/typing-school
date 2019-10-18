@@ -1,40 +1,43 @@
 import { getTypingTests } from './shared/Api';
 import { ExcerciseType, Language, Mode, TypingTest, TypingTestsType } from './shared/TypingTest';
 
+export interface IAppSettings {
+  language: Language;
+  mode: Mode;
+  excerciseType: ExcerciseType;
+}
+
+export const appSettingsInitialState: IAppSettings = {
+  language: 'en',
+  mode:  '',
+  excerciseType: '10fastfingers'
+};
+
 class App {
   public node: HTMLElement;
-  protected language: Language;
-  protected mode: Mode;
-  protected disableCorrection: boolean;
-  protected excerciseType: ExcerciseType;
+  protected settings: IAppSettings;
   protected textData: TypingTestsType;
   protected currentChunkIndex: number;
   protected currentTextChunk: string[];
-  constructor(
-    language: Language = 'en', mode: Mode = '',
-    disableCorrection: boolean = true, excerciseType: ExcerciseType = '10fastfingers'
-  ) {
+  constructor(settings: IAppSettings = appSettingsInitialState) {
+    this.settings = {...appSettingsInitialState, ...settings};
     this.node = document.getElementById('app');
-    this.language = language;
-    this.mode = mode;
-    this.disableCorrection = disableCorrection;
-    this.excerciseType = excerciseType;
     this.textData = [];
     this.setLanguage = this.setLanguage.bind(this);
     this.setMode = this.setMode.bind(this);
   }
 
   public setMode(mode: Mode) {
-    this.mode = mode;
-    this.getData(this.language, mode)
+    this.settings.mode = mode;
+    this.getData(this.settings.language, mode)
     .then((res) => this.node.dispatchEvent(new Event('setMode')));
   }
   get currentLanguage() {
-    return this.language;
+    return this.settings.language;
   }
   public setLanguage(language: Language) {
-    this.language = language;
-    this.getData(language, this.mode)
+    this.settings.language = language;
+    this.getData(language, this.settings.mode)
     .then((res) => this.node.dispatchEvent(new Event('setLanguage')));
   }
   public newTextChunk() {

@@ -62,12 +62,12 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
     console.error(noSupportForindexedDBMessage);
     return new Promise((resolve, reject) => reject(noSupportForindexedDBMessage));
   }
-  const request = idb.open('typing_school', 5);
+  const request = idb.open('typing_school', 8);
 
   return new Promise((resolve, reject) => {
     request.onerror = (event) => {
-      console.error('indexedDB error', request.error);
-      reject(request.error);
+      console.error('indexedDB error', event);
+      reject(event);
     };
 
     request.onsuccess = (event) => {
@@ -76,11 +76,16 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
       resolve(db);
     };
 
+    request.onblocked = (event) => {
+      console.log('blocking opening indexedDB...', request.result);
+      reject(request.error);
+    };
+
     request.onupgradeneeded = (event) => {
       console.log('onupgradeneeded event...', 'oldVersion', event.oldVersion);
       console.log('onupgradeneeded event...', 'newVersion', event.newVersion);
       const db = request.result;
-      let store;
+      let store: IDBObjectStore;
       try {
         store = request.transaction.objectStore('analytics');
       } catch (e) {
@@ -103,7 +108,21 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
         store.createIndex('failedWords', 'failedWords', { unique: false });
       }
 
-      resolve(db);
+      db.onversionchange = () => {
+        resolve(db);
+      };
+
+      db.onabort = () => {
+        reject(event);
+      };
+
+      db.onerror = () => {
+        reject(event);
+      };
+
+      db.onclose = () => {
+        resolve(db);
+      };
     };
   });
 }

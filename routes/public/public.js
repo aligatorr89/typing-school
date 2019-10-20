@@ -9,8 +9,8 @@ const get = (req, res) => {
   res.setHeader('Content-Type', getMimeType(path.extname(pathToFile)));
 
   fs.createReadStream(pathToFile)
-  .pipe(res)
-  .on('error', () => res.end());
+  .on('error', () => res.end())
+  .pipe(res);
 };
 
 module.exports = {

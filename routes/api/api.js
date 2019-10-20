@@ -6,8 +6,8 @@ function get(req, res) {
   const options = querystring.parse(url.parse(req.url).query);
 
   fs.createReadStream(getFileName(options.language, options.mode))
-  .pipe(res)
-  .on('error', () => res.end());
+  .on('error', () => res.end())
+  .pipe(res);
 }
 
 function getFileName(language, mode) {

@@ -3,10 +3,12 @@ import { Analytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 
 import IDB from './shared/IndexedDb';
+import SW from './shared/serviceWorker';
 import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
 import * as View from './view';
 
 (() => {
+  SW.setServiceWorker();
   const app = new App();
   const typingTest = new TypingTest();
   IDB.instance
@@ -88,5 +90,4 @@ import * as View from './view';
     userInputView.node.value = '';
     userInputView.node.addEventListener('keydown', keyDownEventHandler);
   }
-
 })();

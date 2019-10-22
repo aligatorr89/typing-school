@@ -7,6 +7,7 @@ const PORT = 8090;
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  console.log('request here:', req.url);
   routeFactory(req, res);
 });
 

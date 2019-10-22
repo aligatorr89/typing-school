@@ -1,15 +1,7 @@
 console.log('serviceWorker server is here...');
 
-const CACHE_NAME = 'typing-school-v10';
-/*
-request here: /
-request here: /public/main.css
-request here: /public/js/bundle.js
-request here: /api?language=en&mode=200
-request here: /sw.js
-request here: /public/manifest.json
-request here: /api?language=en&mode=200
-*/
+const CACHE_NAME = 'typing-school-v1';
+
 const CACHE_URLS_INIT = [
   '/',
   '/public//main.css',
@@ -30,10 +22,9 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
     .then((cache) => {
-      cache.addAll(CACHE_URL_LAZY_LOAD)
-      .then(() => console.log('urls loaded to cache:', CACHE_URL_LAZY_LOAD));
-
       return cache.addAll(CACHE_URLS_INIT).then(() => {
+        cache.addAll(CACHE_URL_LAZY_LOAD)
+        .then(() => console.log('urls loaded to cache:', CACHE_URL_LAZY_LOAD));
         console.log('urls loaded to cache:', CACHE_URLS_INIT);
       })
       .catch((error) => console.log('addCacheRespsonse ERROR:', error));

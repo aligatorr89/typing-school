@@ -15,6 +15,7 @@ function getFactory(req, res) {
   const reqPath = url.parse(req.url).pathname.split('/')[1];
   switch(reqPath) {
     case '': return index.get(req, res);
+    case 'sw.js': return index.getServiceWorker(req, res);
     case 'public': return public.get(req, res);
     case 'api': return api.get(req, res);
     default: return index.get404(req, res);

@@ -52,7 +52,7 @@ class App {
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
   }
-  public getData(settings: IAppSettings = this.currentSettings) {
+  public getData(settings: IAppSettings = this.settings) {
     return getTypingTests(settings.language, settings.mode)
     .then((data) => {
       this.textData = data.split('\n');

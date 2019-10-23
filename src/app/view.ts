@@ -111,17 +111,16 @@ export class Timer {
 
 export class Results {
   protected node: HTMLDivElement;
-  protected tableNode: Element;
+  protected tableNode: HTMLTableElement;
   constructor() {
     this.node = document.getElementById('last_100_results') as HTMLDivElement;
   }
   public setTable(data: IAnalyticsResult[]) {
-    this.node.append(AnalyticsResultsViewHelp.getTable(data));
-    this.tableNode = this.node.getElementsByClassName('results-table')[0];
+    this.tableNode = AnalyticsResultsViewHelp.getTable(data);
+    this.node.append(this.tableNode);
   }
   public replaceTable(data: IAnalyticsResult[]) {
-    this.node.removeChild(this.tableNode);
-    this.setTable(data);
+    AnalyticsResultsViewHelp.replaceTable(this.tableNode, data);
   }
   public prependToTable(resultRow: IAnalyticsResult) {
     if (this.tableNode) {

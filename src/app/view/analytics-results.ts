@@ -26,6 +26,30 @@ export function getTable(data) {
   return table;
 }
 
+export function replaceTable(parent: HTMLTableElement, data) {
+  const tbody = parent.children[1];
+  const trs = tbody.getElementsByTagName('tr');
+  if (trs.length === data.length) {
+    for (let i = 0; i < data.length; i++) {
+      setTableRow(trs[i], data[i]);
+    }
+  } else if (trs.length > data.length) {
+    for (let i = 0; i < data.length; i++) {
+      setTableRow(trs[i], data[i]);
+    }
+    for (let i = trs.length - 1; i >= data.length; i--) {
+      tbody.removeChild(trs[i]);
+    }
+  } else if (trs.length < data.length) {
+    for (let i = 0; i < trs.length; i++) {
+      setTableRow(trs[i], data[i]);
+    }
+    for (let i = trs.length; i < data.length; i++) {
+      tbody.appendChild(getTableRow(data[i]));
+    }
+  }
+}
+
 export function getTableRow(row) {
   const tr = document.createElement('tr');
   for (let j = 0; j < analyticsResultsKeys.length; j++) {
@@ -35,4 +59,11 @@ export function getTableRow(row) {
     tr.appendChild(td);
   }
   return tr;
+}
+
+export function setTableRow(tr: HTMLTableRowElement, row) {
+  const tds = tr.getElementsByTagName('td');
+  for (let i = 0; i < analyticsResultsKeys.length; i++) {
+    tds[i].textContent = JSON.stringify(row[analyticsResultsKeys[i]]);
+  }
 }

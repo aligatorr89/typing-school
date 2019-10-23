@@ -1,10 +1,11 @@
 console.log('serviceWorker server is here...');
 
-const CACHE_NAME = 'typing-school-v1';
+const CACHE_NAME = 'typing-school-v01';
 
 const CACHE_URLS_INIT = [
   '/',
-  '/public//main.css',
+  '/public/main.css',
+  '/public/favicon.ico',
   '/public/js/bundle.js',
   '/public/manifest.json',
   '/public/404.html'

@@ -65,7 +65,7 @@ import * as View from './view';
       const writtenWord = userInputView.node.value;
       const nowDate = Date.now();
       // spaceKeyupDisableCorrection(event);
-      textView.nextWordHighlight(typingTest.currentWordCount);
+      textView.nextWordHighlight();
       userInputView.node.value = '';
       analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime);
       typingTest.nextWord(writtenWord, nowDate);
@@ -75,8 +75,7 @@ import * as View from './view';
   }
 
   function spaceKeyupDisableCorrection() {
-    textView.highlightPrevious(typingTest.currentWordCount - 1);
-    textView.highlightCurrent(typingTest.currentWordCount);
+    textView.nextWordHighlight();
     userInputView.node.value = '';
   }
 

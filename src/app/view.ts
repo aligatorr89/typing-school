@@ -1,29 +1,43 @@
+import { IAnalyticsResult } from './shared/AnalyticsResult';
 import IDB from './shared/IndexedDb';
 import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
-import { Language, languages, Mode, modes } from './shared/TypingTest';
+import { Language, languages, Mode, modes, TypingTestsType } from './shared/TypingTest';
 import * as ViewHelp from './shared/ViewHelp';
+import * as AnalyticsResultsViewHelp from './view/analytics-results';
+import * as TextViewHelp from './view/text-chunk';
 
 export class Text {
-  protected node: HTMLElement;
+  protected node: HTMLDivElement;
+  private isSet: boolean = false;
+  private currentIndex = 0;
   constructor() {
-      this.node = document.getElementById('words');
+    this.node = document.getElementById('words') as HTMLDivElement;
   }
-  public set(textChunk) {
-    this.node.innerHTML = ViewHelp.getTextChunk(textChunk);
-    this.highlightCurrent(0);
-  }
-
-  public nextWordHighlight(nthChild) {
-    this.node.getElementsByClassName('word')[nthChild].classList.replace('current', 'done');
-    this.node.getElementsByClassName('word')[nthChild + 1].classList.add('current');
-  }
-
-  public highlightCurrent(nthChild) {
-    this.node.getElementsByClassName('word')[nthChild].classList.add('current');
+  public set(textChunk: TypingTestsType) {
+    if (this.isSet) {
+      TextViewHelp.setTextChunk(this.node, textChunk, this.currentIndex);
+    } else {
+      TextViewHelp.renderTextChunk(this.node, textChunk);
+      this.isSet = true;
+    }
+    this.currentIndex = 0;
+    this.node.children[0].classList.add('current');
   }
 
-  public highlightPrevious(nthChild) {
-    this.node.getElementsByClassName('word')[nthChild].classList.replace('current', 'done');
+  public nextWordHighlight() {
+    this.highlightCurrent();
+    this.highlightNext();
+    this.currentIndex++;
+  }
+
+  private highlightCurrent() {
+    this.node.children[this.currentIndex].classList.replace('current', 'done');
+  }
+
+  private highlightNext() {
+    if (this.node.children[this.currentIndex + 1]) {
+      this.node.children[this.currentIndex + 1].classList.add('current');
+    }
   }
 }
 
@@ -33,7 +47,7 @@ export class UserInput {
   public node: HTMLInputElement;
 
   constructor(keyDownEventHandler, keyUpEventHandler) {
-    this.node = document.getElementsByTagName('input')[0];
+    this.node = document.getElementById('typing') as HTMLInputElement;
     this.keyDownEventHandler = keyDownEventHandler;
     this.keyUpEventHandler = keyUpEventHandler;
   }
@@ -68,9 +82,9 @@ export class UserInput {
 }
 
 export class RefreshButton {
-  public node: HTMLElement;
+  public node: HTMLButtonElement;
   constructor() {
-    this.node = document.getElementById('refreshText');
+    this.node = document.getElementById('refreshText') as HTMLButtonElement;
   }
 }
 
@@ -78,9 +92,8 @@ export class Timer {
   protected node: HTMLElement;
   protected intervalId: any;
   constructor() {
-    this.node = document.getElementById('timer');
+    this.node = document.getElementById('timer') as HTMLElement;
     this.node.innerText = '0';
-    // this.intervalId = 0;
   }
 
   public set() {
@@ -97,22 +110,22 @@ export class Timer {
 }
 
 export class Results {
-  protected node: HTMLElement;
+  protected node: HTMLDivElement;
   protected tableNode: Element;
   constructor() {
-    this.node = document.getElementById('last_100_results');
+    this.node = document.getElementById('last_100_results') as HTMLDivElement;
   }
-  public setTable(data) {
-    this.node.append(ViewHelp.getAnalyticsResultsTable(data));
+  public setTable(data: IAnalyticsResult[]) {
+    this.node.append(AnalyticsResultsViewHelp.getTable(data));
     this.tableNode = this.node.getElementsByClassName('results-table')[0];
   }
-  public replaceTable(data) {
+  public replaceTable(data: IAnalyticsResult[]) {
     this.node.removeChild(this.tableNode);
     this.setTable(data);
   }
-  public prependToTable(resultRow) {
+  public prependToTable(resultRow: IAnalyticsResult) {
     if (this.tableNode) {
-      this.tableNode.children[1].prepend(ViewHelp.getAnalyticsResultsTableRowNode(resultRow));
+      this.tableNode.children[1].prepend(AnalyticsResultsViewHelp.getTableRow(resultRow));
     } else {
       this.setTable([resultRow]);
     }
@@ -121,9 +134,8 @@ export class Results {
 
 export class DownLoadResultsButton {
   protected node: HTMLButtonElement;
-  protected idb: IDBDatabase;
   constructor() {
-    this.node = this.findButton();
+    this.node = ViewHelp.findButtonElement('downloadResults');
     this.node.addEventListener('click', this.clickHandler);
     this.clickHandler = this.clickHandler.bind(this);
   }
@@ -144,16 +156,6 @@ export class DownLoadResultsButton {
       document.body.removeChild(element);
     })
     .catch((error) => console.log(error));
-  }
-
-  private findButton(): HTMLButtonElement {
-    const buttons = document.getElementsByTagName('button');
-    for (let i = 0; i < buttons.length; i++) {
-      if (buttons[i].getAttribute('name') === 'downloadResults') {
-        buttons[i].name += appMarkBinded;
-        return buttons[i];
-      }
-    }
   }
 }
 

@@ -93,19 +93,19 @@ export class Timer {
   protected intervalId: any;
   constructor() {
     this.node = document.getElementById('timer') as HTMLElement;
-    this.node.innerText = '0';
+    this.node.textContent = '0';
   }
 
   public set() {
     let seconds = 0;
     this.intervalId = setInterval(() => {
-        this.node.innerText = ++seconds + '';
+        this.node.textContent = ++seconds + '';
     }, 1000);
   }
 
   public unset() {
     clearInterval(this.intervalId);
-    this.node.innerText = '0';
+    this.node.textContent = '0';
   }
 }
 
@@ -164,6 +164,7 @@ export class LanguageSelect {
   protected node: HTMLSelectElement;
   constructor(setLanguage: (lang: Language) => void) {
     this.node = ViewHelp.findSelectElement(LanguageSelect.elementName);
+    this.node.style.display = '';
     this.setLanguage = setLanguage;
     ViewHelp.setSelectElementOptions(this.node, languages);
     this.clickEventHandler = this.clickEventHandler.bind(this);

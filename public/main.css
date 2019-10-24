@@ -7,14 +7,6 @@ body {
   background-color: #f4f4f4;
 }
 
-.word.done {
-  background: #88aaff;
-}
-
-.word.current {
-  background: #ddd;
-}
-
 .text-center {
   text-align: center;
 }
@@ -22,9 +14,11 @@ body {
 .results-table {
   font-size: 1.6rem;
   border-collapse: collapse;
+  text-align: center;
 }
 
-.results-table .border {
+.results-table th,
+.results-table td {
   border: 0.1rem solid #000;
 }
 
@@ -36,6 +30,13 @@ body {
   background-color: #f8f8f8;
 }
 
+#words .word.done {
+  background: #88aaff;
+}
+
+#words .word.current {
+  background: #ddd;
+}
 
 #typing {
   font-size: 3.6rem;

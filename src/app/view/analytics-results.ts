@@ -1,15 +1,13 @@
-import { analyticsResultsKeys } from '../shared/AnalyticsResult';
+import { analyticsResultsKeys, IAnalyticsResult } from '../shared/AnalyticsResult';
 
-export function getTable(data) {
+export function getTable(data: IAnalyticsResult[]) {
   const table = document.createElement('table');
-  table.classList.add('results-table', 'text-center');
-
+  table.classList.add('results-table');
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
 
   for (let i = 0; i < analyticsResultsKeys.length; i++) {
     const th = document.createElement('th');
-    th.classList.add('text-center', 'border');
     th.textContent = analyticsResultsKeys[i];
     tr.appendChild(th);
   }
@@ -26,7 +24,7 @@ export function getTable(data) {
   return table;
 }
 
-export function replaceTable(parent: HTMLTableElement, data) {
+export function replaceTable(parent: HTMLTableElement, data: IAnalyticsResult[]) {
   const tbody = parent.children[1];
   const trs = tbody.getElementsByTagName('tr');
   if (trs.length === data.length) {
@@ -50,11 +48,10 @@ export function replaceTable(parent: HTMLTableElement, data) {
   }
 }
 
-export function getTableRow(row) {
+export function getTableRow(row: IAnalyticsResult) {
   const tr = document.createElement('tr');
   for (let j = 0; j < analyticsResultsKeys.length; j++) {
     const td = document.createElement('td');
-    td.classList.add('border');
     td.textContent = JSON.stringify(row[analyticsResultsKeys[j]]);
     tr.appendChild(td);
   }

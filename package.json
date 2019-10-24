@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node index.js",
-    "build": "npm run lint && webpack",
+    "build": "npm run lint && npm run sass && webpack",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "sass": "sass --style=compressed src/main.sass public/main.css",
     "test": ""
   },
   "repository": {
@@ -26,6 +27,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^12.7.12",
+    "sass": "^1.23.1",
     "ts-loader": "^6.2.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.4",

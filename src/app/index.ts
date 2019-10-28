@@ -1,21 +1,18 @@
-import App, { appSettingsInitialState, IAppSettings } from './app';
+import App from './app';
 import { Analytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 
-import IDB from './shared/IndexedDb';
 import SW from './shared/serviceWorker';
-import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
+import { postMessageData, postMessageResponse, worker } from './shared/WebWorker';
 import * as View from './view';
 
 (() => {
-  SW.setServiceWorker();
+  // SW.setServiceWorker();
   const app = new App();
   const typingTest = new TypingTest();
-  IDB.instance
-  .then((db) => {
-    IDBQueries.getLast100Results(db, app.currentSettings)
-    .then((res) => resultsView.setTable(res));
-  })
+  worker.postMessage(postMessageData('getLast100Rows', null, app.currentSettings));
+  postMessageResponse()
+  .then((res) => resultsView.setTable(res.data))
   .catch((error) => console.log(error));
 
   app.getData()
@@ -45,11 +42,13 @@ import * as View from './view';
   app.node.addEventListener('setMode', changeSettings);
 
   function changeSettings() {
-    IDBQueries.getLast100Results(IDB.db, app.currentSettings)
+    worker.postMessage(postMessageData('getLast100Rows', null, app.currentSettings));
+    postMessageResponse()
     .then((res) => {
       endTestEventHandler();
-      resultsView.replaceTable(res);
-    });
+      resultsView.replaceTable(res.data);
+    })
+    .catch((error) => console.log(error));
   }
 
   function keyDownEventHandler(event) {
@@ -67,8 +66,8 @@ import * as View from './view';
       // spaceKeyupDisableCorrection(event);
       textView.nextWordHighlight();
       userInputView.node.value = '';
-      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime);
-      typingTest.nextWord(writtenWord, nowDate);
+      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime, app.currentSettings);
+      typingTest.nextWord(nowDate);
     } else if (event.keyCode === 27) {
       endTestEventHandler();
     }
@@ -80,11 +79,10 @@ import * as View from './view';
   }
 
   function endTestEventHandler() {
-    const analyticsResult = analytics.analyzePrevious(app.currentSettings);
-    resultsView.prependToTable(analyticsResult);
-    IDB.insertData('analytics', analyticsResult);
-    typingTest.setNew(app.newTextChunk());
+    analytics.analyzePrevious(app.currentSettings)
+    .then((res) => resultsView.prependToTable(res));
     timerView.unset();
+    typingTest.setNew(app.newTextChunk());
     textView.set(app.textChunk);
     userInputView.node.value = '';
     userInputView.node.addEventListener('keydown', keyDownEventHandler);

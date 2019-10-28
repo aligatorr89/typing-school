@@ -4,7 +4,10 @@ const environment = require('./environment');
 module.exports = {
   mode: "development", // "production" | "development" | "none"
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
-  entry: path.join(environment.root, "src", "app"), // string | object | array
+  entry: {
+    "bundle": path.join(environment.root, "src", "app"),
+    "worker": path.join(environment.root, "src", "web-workers")
+  } , // string | object | array
   // defaults to ./src
   // Here the application starts executing
   // and webpack starts bundling
@@ -25,7 +28,7 @@ module.exports = {
     path: path.resolve(environment.root, "public", "js"), // string
     // the target directory for all output files
     // must be an absolute path (use the Node.js path module)
-    filename: "bundle.js", // string
+    filename: "[name].js", // string
     // the filename template for entry chunks
     publicPath: environment.publicPath, // string
     // the url to the output directory resolved relative to the HTML page

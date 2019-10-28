@@ -53,7 +53,7 @@ export class TypingTest {
     return this.currentWordTimeStart;
   }
 
-  public nextWord(typedWord: string, nowDate: number) {
+  public nextWord(nowDate: number) {
     // analytics.insert(typedWord, this.text[this.wordCount], newDate - this.currentWordTimeCounter);
     this.currentWordTimeStart = nowDate;
     this.wordCount++;

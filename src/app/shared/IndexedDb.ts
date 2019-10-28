@@ -17,31 +17,38 @@ export default class IDB {
   public static idbTransaction: IDBTransaction;
 
   public static get instance(): Promise<IDBDatabase> {
-    if (this.db) {
+    if (IDB.db) {
       return new Promise<IDBDatabase>((resolve, reject) => {
-        resolve(this.db);
+        resolve(IDB.db);
       });
     } else {
-      this.idbFactory = window.indexedDB;
+      IDB.idbFactory = indexedDB;
       return getDbConnection(this.idbFactory)
-      .then((db) => this.db = db)
+      .then((db) => IDB.db = db)
       .catch((error) => error);
     }
   }
 
   public static getObjectStore(table: TypingSchoolTables, mode: IDBTransactionMode) {
-    return this.db.transaction(table, mode).objectStore(table);
+    return IDB.db.transaction(table, mode).objectStore(table);
   }
 
   public static insertData(table: TypingSchoolTables, row: any) {
-    const store = this.getObjectStore(table, 'readwrite');
+    const store = IDB.getObjectStore(table, 'readwrite');
     const req = store.add(row);
-    // req.onsuccess = (evt) => {};
-    // req.onerror = () => {};
+    return new Promise((resolve, reject) => {
+      req.onsuccess = () => {
+        resolve(req.result);
+      };
+      req.onerror = () => {
+        console.log('IDB.insertData error', req.error);
+        reject(req.error);
+      };
+    });
   }
 
   public static getData(table: TypingSchoolTables) {
-    const store = this.getObjectStore(table, 'readonly');
+    const store = IDB.getObjectStore(table, 'readonly');
     const req = store.getAll();
 
     return new Promise((resolve, reject) => {
@@ -62,7 +69,7 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
     console.error(noSupportForindexedDBMessage);
     return new Promise((resolve, reject) => reject(noSupportForindexedDBMessage));
   }
-  const request = idb.open('typing_school', 9);
+  const request = idb.open('typing_school', 11);
 
   return new Promise((resolve, reject) => {
     request.onerror = (event) => {
@@ -118,6 +125,23 @@ function getDbConnection(idb: IDBFactory): Promise<IDBDatabase> {
 
       if (store.indexNames.contains('excerciseType')) {
         store.createIndex('excerciseType', 'excerciseType', { unique: false });
+      }
+
+      try {
+        store = request.transaction.objectStore('words');
+      } catch (e) {
+        store = db.createObjectStore('words', {keyPath: 'id', autoIncrement: true});
+      }
+      if (store.indexNames.contains('word')) {
+        store.createIndex('word', 'word', { unique: false });
+      }
+
+      if (store.indexNames.contains('correctWord')) {
+        store.createIndex('correctWord', 'correctWord', { unique: false });
+      }
+
+      if (store.indexNames.contains('timeNeeded')) {
+        store.createIndex('timeNeeded', 'timeNeeded', { unique: false });
       }
 
       db.onversionchange = () => {

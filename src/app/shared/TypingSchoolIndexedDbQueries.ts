@@ -1,5 +1,10 @@
 import { appSettingsInitialState, IAppSettings } from '../app';
 import { IAnalyticsResult } from './AnalyticsResult';
+import { TypingSchoolTables } from './IndexedDb';
+
+function getObjectStore(idb: IDBDatabase, table: TypingSchoolTables, mode: IDBTransactionMode = 'readonly') {
+  return idb.transaction('analytics', mode).objectStore(table);
+}
 
 export function getLast100Results(
   idb: IDBDatabase, appSettings: IAppSettings = appSettingsInitialState): Promise<IAnalyticsResult[]> {
@@ -39,6 +44,20 @@ export function getAllData(idb: IDBDatabase): Promise<IAnalyticsResult[]> {
     };
     req.onerror = () => {
       console.log('IDBQueries.getAllData error', req.error);
+      reject(req.error);
+    };
+  });
+}
+
+export function insertData(idb: IDBDatabase, table: TypingSchoolTables, row: object | object[]) {
+  return new Promise((resolve, reject) => {
+    const store = getObjectStore(idb, table, 'readwrite');
+    const req = store.add(row);
+    req.onsuccess = () => {
+      resolve(req.result);
+    };
+    req.onerror = () => {
+      console.log('IDBQueries.insertData error', req.error);
       reject(req.error);
     };
   });

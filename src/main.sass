@@ -1,8 +1,49 @@
+$body-light-bg-color: #f4f4f4
+$body-light-color: #000000
+$body-dark-bg-color: #444444
+$body-dark-color: #ffffff
+
+$words-light-bg-color: #f8f8f8
+$words-light-color: #000000
+$words-light-border-color: blue
+$words-dark-bg-color: #888888
+$words-dark-color: #f4f4f4
+$words-dark-border-color: yellow
+$words-done-light-bg-color: #88aaff
+$words-done-dark-bg-color: #2233aa
+$words-current-light-bg-color: #ddd
+$words-current-dark-bg-color: #222222
+
+$typing-focus-light-color: blue
+$typing-focus-dark-color: yellow
+
+$results-table-td-light-border-color: #000000
+$results-table-td-dark-border-color: #ffffff
+
 html
   font-size: 10px
 
 body
-  background-color: #f4f4f4
+  background-color: $body-light-bg-color !important
+  color: $body-light-color !important
+
+@media (prefers-color-scheme: dark)
+  body
+    background-color: $body-dark-bg-color !important
+    color: $body-dark-color !important
+  #words
+    border-color: $words-dark-border-color !important
+    background-color: $words-dark-bg-color !important
+    color: $words-dark-color !important
+    .word.done
+      background: $words-done-dark-bg-color !important
+    .word.current
+      background: $words-current-dark-bg-color !important
+  #typing:focus
+    border-color: $typing-focus-dark-color !important
+  .results-table
+    th, td
+      border-color: $results-table-td-dark-border-color !important
 
 .text-center
   text-align: center
@@ -12,26 +53,31 @@ body
   border-collapse: collapse
   text-align: center
   th, td
-    border: 0.1rem solid #000
+    border-width: 0.1rem
+    border-style: solid
+    border-color: $results-table-td-light-border-color
 
 #words
   font-size: 3rem
   height: 20rem
   overflow: auto
-  border: 0.2rem solid blue
-  background-color: #f8f8f8
-
+  border-width: 0.2rem
+  border-style: solid
+  border-color: $words-light-border-color
+  background-color: $words-light-bg-color
+  color: $words-light-color
   .word.done
-    background: #88aaff
-
+    background: $words-done-light-bg-color
   .word.current
-    background: #ddd
+    background: $words-current-light-bg-color
 
 #typing
   font-size: 3.6rem
 
 #typing:focus
-  border: 0.2rem solid blue
+  border-width: 0.2rem
+  border-style: solid
+  border-color: $typing-focus-light-color
 
 #timer
   font-size: 2rem

@@ -11,6 +11,7 @@
         "allow-snake-case"
       ]
     },
-    "max-classes-per-file": [true, 8, "exclude-class-expressions"]
+    "max-classes-per-file": [true, 8, "exclude-class-expressions"],
+    "no-reference": false
   }
 }

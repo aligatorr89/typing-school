@@ -1,7 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": false,
-    "lib": ["es2018", "webworker"],
-  }
-}

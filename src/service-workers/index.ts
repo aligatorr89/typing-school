@@ -1,4 +1,5 @@
-
+/// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
+/// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
 const CACHE_NAME = 'typing-school-v01';
 
 const CACHE_URLS_INIT = [
@@ -18,10 +19,9 @@ const CACHE_URL_LAZY_LOAD = [
   '/api?language=si&mode=1000'
 ];
 
-var self: ServiceWorkerGlobalScope;
-export {}
+const sw: ServiceWorkerGlobalScope = self as any;
 
-self.addEventListener('install', (event) => {
+sw.addEventListener('install', (event) => {
   console.log('serviceWorker is installing...', 'let\'s add to cache', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -36,7 +36,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-self.addEventListener('activate', (event) => {
+sw.addEventListener('activate', (event) => {
   console.log('serviceWorker server here: is activating...', 'let\'s delete old caches');
   caches.keys().then((cacheNames) => {
     return Promise.all(
@@ -48,7 +48,7 @@ self.addEventListener('activate', (event) => {
   });
 });
 
-self.addEventListener('fetch', (event) => {
+sw.addEventListener('fetch', (event) => {
   console.log('serviceWorker server here: is fetching...', event.request.url);
   // if (event.request.url.substr(0, 4) === 'http') {}
   event.respondWith(caches.match(event.request)
@@ -58,20 +58,20 @@ self.addEventListener('fetch', (event) => {
       return response;
     } else {
       return fetch(event.request)
-      .then((response) => {
+      .then((fetchResponse) => {
         // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+        if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+          return fetchResponse;
         }
 
-        const responseClone = response.clone();
+        const responseClone = fetchResponse.clone();
         console.log('serviceWorker here: saving fetch response to cache...', event.request.url);
 
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseClone);
         });
       })
-      .catch(function () {
+      .catch(() => {
         return caches.match('/public/404.html');
       });
     }

@@ -22,7 +22,7 @@
     ]
   },
   "include": [
-    "./src/**/*"
+    "./src/app/**/*"
   ],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -6,6 +6,7 @@ const CACHE_URLS_INIT = [
   '/',
   '/public/main.css',
   '/public/favicon.ico',
+  '/public/js/worker.js',
   '/public/js/bundle.js',
   '/public/manifest.json',
   '/public/404.html'

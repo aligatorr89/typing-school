@@ -7,7 +7,7 @@ import { postMessageData, postMessageResponse, worker } from './shared/WebWorker
 import * as View from './view';
 
 (() => {
-  // SW.setServiceWorker();
+  SW.setServiceWorker();
   const app = new App();
   const typingTest = new TypingTest();
   worker.postMessage(postMessageData('getLast100Rows', null, app.currentSettings));

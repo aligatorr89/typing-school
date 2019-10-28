@@ -1,5 +1,5 @@
-import { appSettingsInitialState, IAppSettings } from '../app';
 import { IAnalyticsData } from './Analytics';
+import { IAppSettings } from './App';
 import { ExcerciseType, Language, Mode } from './TypingTest';
 
 export const analyticsResultsKeys = ['id', 'words', 'timeNeeded', 'mistakes',

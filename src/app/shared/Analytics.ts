@@ -1,4 +1,4 @@
-import { IAppSettings } from '../app';
+import { IAppSettings } from './App';
 import { postMessageData, postMessageResponse, worker } from './WebWorker';
 
 export interface IAnalytics {

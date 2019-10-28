@@ -1,5 +1,5 @@
 import { IAnalyticsData } from './Analytics';
-import { IAppSettings } from '../app';
+import { IAppSettings } from './App';
 import { TypingSchoolTables } from './IndexedDb';
 
 export const workerLocation = '/public/js/worker.js';

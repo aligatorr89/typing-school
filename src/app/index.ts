@@ -1,4 +1,4 @@
-import App, { IAppSettings } from './app';
+import App from './app';
 import { Analytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 

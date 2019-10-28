@@ -1,5 +1,5 @@
-import { appSettingsInitialState, IAppSettings } from '../app';
 import { IAnalyticsResult } from './AnalyticsResult';
+import { appSettingsInitialState, IAppSettings } from './App';
 import { TypingSchoolTables } from './IndexedDb';
 
 function getObjectStore(idb: IDBDatabase, table: TypingSchoolTables, mode: IDBTransactionMode = 'readonly') {

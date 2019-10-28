@@ -1,17 +1,6 @@
 import { getTypingTests } from './shared/Api';
-import { ExcerciseType, Language, Mode, TypingTest, TypingTestsType } from './shared/TypingTest';
-
-export interface IAppSettings {
-  language: Language;
-  mode: Mode;
-  excerciseType: ExcerciseType;
-}
-
-export const appSettingsInitialState: IAppSettings = {
-  language: 'en',
-  mode:  '200',
-  excerciseType: '10fastfingers'
-};
+import { appSettingsInitialState, IAppSettings } from './shared/App';
+import { ExcerciseType, Language, Mode, TypingTestsType } from './shared/TypingTest';
 
 class App {
   public node: HTMLElement;

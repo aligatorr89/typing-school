@@ -6,7 +6,8 @@ module.exports = {
   // Chosen mode tells webpack to use its built-in optimizations accordingly.
   entry: {
     "bundle": path.join(environment.root, "src", "app"),
-    "worker": path.join(environment.root, "src", "web-workers")
+    "worker": path.join(environment.root, "src", "web-workers"),
+    "sw": path.join(environment.root, "src", "service-workers")
   } , // string | object | array
   // defaults to ./src
   // Here the application starts executing

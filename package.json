@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node index.js",
-    "build": "npm run lint && npm run sass && webpack",
+    "build": "npm run lint && npm run sass && webpack && npm run sw",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "sass": "sass --style=compressed src/main.sass public/main.css",
+    "sw": "node copyServiceWorkerToRootDirectory.js",
     "test": ""
   },
   "repository": {

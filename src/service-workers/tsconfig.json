@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": [
+      "node_modules/typescript"
+    ],
+    "sourceMap": false,
+    "lib": ["es2018", "webworker"]
+  },
+  "include": [
+    "./**/*"
+  ]
+}

@@ -57,6 +57,7 @@ export class AnalyticsResult implements IAnalyticsResult {
 export class AnalyticsResultHelp {
   public static analyze(data: IAnalyticsData[], appSettings: IAppSettings): IAnalyticsResult {
     const result = new AnalyticsResult(appSettings);
+    result.textId = data.length ? data[0].textId : 0;
     for (let i = 0; i < data.length; i++) {
       const current = data[i];
       result.words += 1;

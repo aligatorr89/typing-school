@@ -66,7 +66,8 @@ import * as View from './view';
       // spaceKeyupDisableCorrection(event);
       textView.nextWordHighlight();
       userInputView.node.value = '';
-      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime, app.currentSettings);
+      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime,
+        app.currentSettings, app.textChunkId);
       typingTest.nextWord(nowDate);
     } else if (event.keyCode === 27) {
       endTestEventHandler();

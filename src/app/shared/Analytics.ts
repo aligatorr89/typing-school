@@ -2,7 +2,9 @@ import { IAppSettings } from './App';
 import { postMessageData, postMessageResponse, worker } from './WebWorker';
 
 export interface IAnalytics {
-  insert(word: string, correctWord: string, timeNeeded: number, appSettings: IAppSettings): void;
+  insert(
+    word: string, correctWord: string, timeNeeded: number, appSettings: IAppSettings, textId: number
+  ): void;
   analyzePrevious(appSettings: IAppSettings): void;
   analyzeAll(appSettings: IAppSettings): void;
 }
@@ -18,15 +20,19 @@ export class Analytics implements IAnalytics {
   protected data: IAnalyticsData[];
   protected prevChunkEnd: number;
   protected prevChunkStart: number;
+  protected currentTextId: number;
   constructor() {
     this.data = [];
     this.prevChunkStart = 0;
     this.prevChunkEnd = 0;
   }
 
-  public insert(word: string, correctWord: string, timeNeeded: number, appSettings: IAppSettings): void {
+  public insert(
+    word: string, correctWord: string, timeNeeded: number, appSettings: IAppSettings, textId: number
+  ): void {
+    this.currentTextId = textId;
     word = word.replace(' ', '');
-    const data = {word, correctWord, timeNeeded};
+    const data = {word, correctWord, timeNeeded, textId};
     this.data.push(data);
     worker.postMessage(postMessageData('words', data, appSettings));
     postMessageResponse();

@@ -1,5 +1,5 @@
 import App from './app';
-import { Analytics } from './shared/Analytics';
+import { Analytics, IAnalytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 
 import SW from './shared/serviceWorker';
@@ -12,7 +12,12 @@ import * as View from './view';
   const typingTest = new TypingTest();
   worker.postMessage(postMessageData('getLast100Rows', null, app.currentSettings));
   postMessageResponse()
-  .then((res) => resultsView.setTable(res.data))
+  .then((res) => {
+    resultsView.setTable(res.data);
+    resultsView.node.querySelectorAll('table.results-table tr button.textId').forEach((button) => {
+      button.addEventListener('click', endTest);
+    });
+  })
   .catch((error) => console.log(error));
 
   app.getData()
@@ -87,5 +92,28 @@ import * as View from './view';
     textView.set(app.textChunk);
     userInputView.node.value = '';
     userInputView.node.addEventListener('keydown', keyDownEventHandler);
+  }
+
+  // very bad practice but I need this fast
+  function endTest(event: Event) {
+    const target = event.target as Element;
+    const rowId = parseInt(target.getAttribute('resultsId'), 10);
+    if (rowId > 0) {
+      worker.postMessage(postMessageData('getRowById', {id: rowId}, app.currentSettings));
+      postMessageResponse()
+      .then((res) => {
+        const row = res.data;
+        app.setSettings({
+          mode: row.mode, language: row.language, excerciseType: '10fastfingers',
+        });
+        analytics.analyzePrevious(app.currentSettings)
+        .then((res2) => resultsView.prependToTable(res2));
+        timerView.unset();
+        typingTest.setNew(app.setTextChunk(row.textId));
+        textView.set(app.textChunk);
+        userInputView.node.value = '';
+        userInputView.node.addEventListener('keydown', keyDownEventHandler);
+      });
+    }
   }
 })();

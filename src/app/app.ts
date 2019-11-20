@@ -57,5 +57,10 @@ class App {
     })
     .catch((error) => error);
   }
+  public setSettings(settings: IAppSettings) {
+    this.settings.language = settings.language;
+    this.settings.mode = settings.mode;
+    this.settings.excerciseType = settings.excerciseType;
+  }
 }
 export default App;

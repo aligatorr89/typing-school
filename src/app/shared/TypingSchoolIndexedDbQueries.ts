@@ -62,3 +62,19 @@ export function insertData(idb: IDBDatabase, table: TypingSchoolTables, row: obj
     };
   });
 }
+
+export function getRowById(
+  idb: IDBDatabase,  appSettings: IAppSettings = appSettingsInitialState, rowId: number
+): Promise<IAnalyticsResult> {
+  return new Promise((resolve, reject) => {
+    const store = idb.transaction('analytics', 'readonly').objectStore('analytics');
+    const req = store.get(rowId);
+    req.onsuccess = () => {
+      resolve(req.result);
+    };
+    req.onerror = () => {
+      console.log('IDBQueries.getRowById error', req.error);
+      reject(req.error);
+    };
+  });
+}

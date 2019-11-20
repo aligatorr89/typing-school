@@ -110,7 +110,7 @@ export class Timer {
 }
 
 export class Results {
-  protected node: HTMLDivElement;
+  public node: HTMLDivElement;
   protected tableNode: HTMLTableElement;
   constructor() {
     this.node = document.getElementById('last_100_results') as HTMLDivElement;

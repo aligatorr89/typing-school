@@ -3,9 +3,10 @@ import { IAppSettings } from './App';
 import { ExcerciseType, Language, Mode } from './TypingTest';
 
 export const analyticsResultsKeys = ['id', 'words', 'timeNeeded', 'mistakes',
-'correctWordCharacters', 'allWordCharacters', 'failedWords', 'wpm', 'wpm_standard'];
+'correctWordCharacters', 'allWordCharacters', 'failedWords', 'wpm', 'wpm_standard', 'textId'];
 
 export interface IAnalyticsResult {
+  id?: number;
   textId: number;
   words: number;
   timeNeeded: number;

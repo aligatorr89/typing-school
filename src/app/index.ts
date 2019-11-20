@@ -52,6 +52,9 @@ import * as View from './view';
     .then((res) => {
       endTestEventHandler();
       resultsView.replaceTable(res.data);
+      resultsView.node.querySelectorAll('table.results-table tr button.textId').forEach((button) => {
+        button.addEventListener('click', endTest);
+      });
     })
     .catch((error) => console.log(error));
   }

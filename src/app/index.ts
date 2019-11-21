@@ -88,8 +88,14 @@ import * as View from './view';
   }
 
   function endTestEventHandler() {
-    analytics.analyzePrevious(app.currentSettings)
-    .then((res) => resultsView.prependToTable(res));
+    if (typingTest.currentWordCount) {
+      analytics.analyzePrevious(app.currentSettings)
+      .then((res) => {
+        resultsView.prependToTable(res);
+        resultsView.node.querySelector('table.results-table tr button.textId')
+        .addEventListener('click', endTest);
+      });
+    }
     timerView.unset();
     typingTest.setNew(app.newTextChunk());
     textView.set(app.textChunk);
@@ -109,13 +115,20 @@ import * as View from './view';
         app.setSettings({
           mode: row.mode, language: row.language, excerciseType: '10fastfingers',
         });
-        analytics.analyzePrevious(app.currentSettings)
-        .then((res2) => resultsView.prependToTable(res2));
+        if (typingTest.currentWordCount) {
+          analytics.analyzePrevious(app.currentSettings)
+          .then((res2) => {
+            resultsView.prependToTable(res2);
+            resultsView.node.querySelector('table.results-table tr button.textId')
+            .addEventListener('click', endTest);
+          });
+        }
         timerView.unset();
         typingTest.setNew(app.setTextChunk(row.textId));
         textView.set(app.textChunk);
         userInputView.node.value = '';
         userInputView.node.addEventListener('keydown', keyDownEventHandler);
+        userInputView.node.focus();
       });
     }
   }

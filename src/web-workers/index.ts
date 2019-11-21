@@ -12,8 +12,10 @@ worker.onmessage = (event) => {
       case 'analytics':
         event.stopPropagation();
         const result = AnalyticsResultHelp.analyze(eventData.data, eventData.appSettings);
-        IDB.insertData('analytics', result);
-        return worker.postMessage({...eventData, ...{data: result}});
+        return IDB.insertData('analytics', result).then((res) => {
+          result.id = res;
+          return worker.postMessage({...eventData, ...{data: result}});
+        });
       case 'words':
         event.stopPropagation();
         IDB.insertData('words', {...eventData.data, ...eventData.appSettings});

@@ -1,6 +1,6 @@
 /// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
 /// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
-const CACHE_NAME = 'typing-school-v14RC';
+const CACHE_NAME = 'typing-school-v17RC';
 
 const CACHE_URLS_INIT = [
   '/',
@@ -38,14 +38,16 @@ sw.addEventListener('install', (event) => {
 
 sw.addEventListener('activate', (event) => {
   console.log('serviceWorker server here: is activating...', 'let\'s delete old caches');
-  caches.keys().then((cacheNames) => {
-    return Promise.all(
-      cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
-      .map((cacheName) => {
-        caches.delete(cacheName);
-      })
-    );
-  });
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
+        .map((cacheName) => {
+          caches.delete(cacheName);
+        })
+      );
+    })
+  );
 });
 
 sw.addEventListener('fetch', (event) => {

@@ -1,6 +1,6 @@
 /// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
 /// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
-const CACHE_NAME = 'typing-school-v17RC';
+const CACHE_NAME = 'typing-school-v24RC';
 
 const CACHE_URLS_INIT = [
   '/',
@@ -41,9 +41,10 @@ sw.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
-        .map((cacheName) => {
-          caches.delete(cacheName);
+        cacheNames.map((cacheName) => {
+          if (CACHE_NAME !== cacheName) {
+            return caches.delete(cacheName);
+          }
         })
       );
     })
@@ -79,3 +80,5 @@ sw.addEventListener('fetch', (event) => {
     }
   }));
 });
+
+sw.skipWaiting();

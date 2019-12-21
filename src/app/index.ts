@@ -33,7 +33,7 @@ import * as View from './view';
   const refreshButtonView = new View.RefreshButton();
   const timerView = new View.Timer();
   const resultsView = new View.Results();
-  const downloadButtonView = new View.DownLoadResultsButton();
+  const downloadButtonView = new View.DownLoadResultsButton(app.currentSettings);
   const languageSelectView = new View.LanguageSelect(app.setLanguage);
   const modeSelectView = new View.ModeSelect(app.setMode);
 

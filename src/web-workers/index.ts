@@ -28,6 +28,10 @@ worker.onmessage = (event) => {
         event.stopPropagation();
         return IDBQueries.getRowById(IDB.db, eventData.appSettings, eventData.data.id)
         .then((res) => worker.postMessage({...eventData, ...{data: res}}));
+      case 'getAllRows':
+        event.stopPropagation();
+        return IDBQueries.getAllData(IDB.db)
+        .then((res) => worker.postMessage({...eventData, ...{data: res}}));
       case 'test':
         setTimeout(() => {
           worker.postMessage({...eventData});

@@ -4,7 +4,7 @@ import { TypingSchoolTables } from './IndexedDb';
 
 export const workerLocation = '/public/js/worker.js';
 
-export type EventDataNames = TypingSchoolTables | 'getLast100Rows' | 'changeSettings' | 'getRowById' | 'test';
+export type EventDataNames = TypingSchoolTables | 'getLast100Rows' | 'changeSettings' | 'getRowById' | 'getAllRows' | 'test';
 export type EventDataTypes = IAnalyticsData | IAnalyticsData[];
 
 export interface IAppWorker extends Worker {

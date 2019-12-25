@@ -19,6 +19,7 @@ export interface IAnalyticsResult {
   language: Language;
   mode: Mode;
   excerciseType: ExcerciseType;
+  datetime: string;
 }
 
 export interface IAnalyticsResultFailedWords {
@@ -39,6 +40,7 @@ export class AnalyticsResult implements IAnalyticsResult {
   public language: Language;
   public mode: Mode;
   public excerciseType: ExcerciseType;
+  public datetime: string;
   constructor(appSettings: IAppSettings) {
     this.textId = 0;
     this.words = 0;
@@ -52,6 +54,7 @@ export class AnalyticsResult implements IAnalyticsResult {
     this.mode = appSettings.mode;
     this.language = appSettings.language;
     this.excerciseType = appSettings.excerciseType;
+    this.datetime = new Date().toISOString();
   }
 }
 

@@ -14,6 +14,7 @@ export interface IAnalyticsData {
   word: string;
   correctWord: string;
   timeNeeded: number;
+  datetime: string;
 }
 
 export class Analytics implements IAnalytics {
@@ -32,7 +33,8 @@ export class Analytics implements IAnalytics {
   ): void {
     this.currentTextId = textId;
     word = word.replace(' ', '');
-    const data = {word, correctWord, timeNeeded, textId};
+    const datetime = new Date().toISOString();
+    const data = {word, correctWord, timeNeeded, textId, datetime};
     this.data.push(data);
     worker.postMessage(postMessageData('words', data, appSettings));
     postMessageResponse();

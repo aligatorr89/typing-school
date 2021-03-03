@@ -27,6 +27,14 @@ body
   background-color: $body-light-bg-color !important
   color: $body-light-color !important
 
+  animation: fadein 1.5s
+
+@keyframes fadein
+  0%
+    opacity: 0
+  100%
+    opacity: 1
+
 @media (prefers-color-scheme: dark)
   body
     background-color: $body-dark-bg-color !important

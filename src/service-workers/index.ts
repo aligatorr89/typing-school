@@ -1,6 +1,6 @@
 /// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
 /// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
-const CACHE_NAME = 'typing-school-v32RC';
+const CACHE_NAME = 'typing-school-v35RC';
 
 const CACHE_URLS_INIT = [
   '/',

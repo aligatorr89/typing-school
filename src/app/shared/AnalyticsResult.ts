@@ -64,6 +64,7 @@ export class AnalyticsResultHelp {
     result.textId = data.length ? data[0].textId : 0;
     for (let i = 0; i < data.length; i++) {
       const current = data[i];
+      const totalUppercaseCharacters = current.word.replace(/[^A-Z]/g, '').length;
       result.words += 1;
       result.timeNeeded += current.timeNeeded ? current.timeNeeded : 0;
       if (current.word !== current.correctWord && current.word) {
@@ -74,9 +75,9 @@ export class AnalyticsResultHelp {
         result.mistakes += 1;
       } else {
         // Word length + space character + uppercase character counts for two
-        result.correctWordCharacters += current.word.length + 1 + current.word.replace(/[^A-Z]/g, '').length;
+        result.correctWordCharacters += current.word.length + 1 + totalUppercaseCharacters;
       }
-      result.allWordCharacters += current.word.length + 1;
+      result.allWordCharacters += current.word.length + 1 + totalUppercaseCharacters;
     }
 
     result.wpm = Math.round((result.words - result.mistakes) * (100 * 60000 / result.timeNeeded) / 100);

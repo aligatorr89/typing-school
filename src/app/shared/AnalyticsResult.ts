@@ -68,7 +68,8 @@ export class AnalyticsResultHelp {
         });
         result.mistakes += 1;
       } else {
-        result.correctWordCharacters += current.word.length + 1;
+        // Word length + space character + uppercase character counts for two
+        result.correctWordCharacters += current.word.length + 1 + current.word.replace(/[^A-Z]/g, '').length;
       }
       result.allWordCharacters += current.word.length + 1;
     }

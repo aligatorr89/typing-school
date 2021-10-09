@@ -1,5 +1,5 @@
 import App from './app';
-import { Analytics } from './shared/Analytics';
+import { Analytics, IAnalytics } from './shared/Analytics';
 import { TypingTest } from './shared/TypingTest';
 
 import SW from './shared/serviceWorker';
@@ -12,7 +12,12 @@ import * as View from './view';
   const typingTest = new TypingTest();
   worker.postMessage(postMessageData('getLast100Rows', null, app.currentSettings));
   postMessageResponse()
-  .then((res) => resultsView.setTable(res.data))
+  .then((res) => {
+    resultsView.setTable(res.data);
+    resultsView.node.querySelectorAll('table.results-table tr button.textId').forEach((button) => {
+      button.addEventListener('click', endTest);
+    });
+  })
   .catch((error) => console.log(error));
 
   app.getData()
@@ -28,7 +33,7 @@ import * as View from './view';
   const refreshButtonView = new View.RefreshButton();
   const timerView = new View.Timer();
   const resultsView = new View.Results();
-  const downloadButtonView = new View.DownLoadResultsButton();
+  const downloadButtonView = new View.DownLoadResultsButton(app.currentSettings);
   const languageSelectView = new View.LanguageSelect(app.setLanguage);
   const modeSelectView = new View.ModeSelect(app.setMode);
 
@@ -47,6 +52,9 @@ import * as View from './view';
     .then((res) => {
       endTestEventHandler();
       resultsView.replaceTable(res.data);
+      resultsView.node.querySelectorAll('table.results-table tr button.textId').forEach((button) => {
+        button.addEventListener('click', endTest);
+      });
     })
     .catch((error) => console.log(error));
   }
@@ -66,7 +74,8 @@ import * as View from './view';
       // spaceKeyupDisableCorrection(event);
       textView.nextWordHighlight();
       userInputView.node.value = '';
-      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime, app.currentSettings);
+      analytics.insert(writtenWord, typingTest.currentWord, nowDate - typingTest.currentWordTime,
+        app.currentSettings, app.textChunkId);
       typingTest.nextWord(nowDate);
     } else if (event.keyCode === 27) {
       endTestEventHandler();
@@ -79,12 +88,48 @@ import * as View from './view';
   }
 
   function endTestEventHandler() {
-    analytics.analyzePrevious(app.currentSettings)
-    .then((res) => resultsView.prependToTable(res));
+    if (typingTest.currentWordCount) {
+      analytics.analyzePrevious(app.currentSettings)
+      .then((res) => {
+        resultsView.prependToTable(res);
+        resultsView.node.querySelector('table.results-table tr button.textId')
+        .addEventListener('click', endTest);
+      });
+    }
     timerView.unset();
     typingTest.setNew(app.newTextChunk());
     textView.set(app.textChunk);
     userInputView.node.value = '';
     userInputView.node.addEventListener('keydown', keyDownEventHandler);
+  }
+
+  // very bad practice but I need this fast
+  function endTest(event: Event) {
+    const target = event.target as Element;
+    const rowId = parseInt(target.getAttribute('resultsId'), 10);
+    if (rowId > 0) {
+      worker.postMessage(postMessageData('getRowById', {id: rowId}, app.currentSettings));
+      postMessageResponse()
+      .then((res) => {
+        const row = res.data;
+        app.setSettings({
+          mode: row.mode, language: row.language, excerciseType: '10fastfingers',
+        });
+        if (typingTest.currentWordCount) {
+          analytics.analyzePrevious(app.currentSettings)
+          .then((res2) => {
+            resultsView.prependToTable(res2);
+            resultsView.node.querySelector('table.results-table tr button.textId')
+            .addEventListener('click', endTest);
+          });
+        }
+        timerView.unset();
+        typingTest.setNew(app.setTextChunk(row.textId));
+        textView.set(app.textChunk);
+        userInputView.node.value = '';
+        userInputView.node.addEventListener('keydown', keyDownEventHandler);
+        userInputView.node.focus();
+      });
+    }
   }
 })();

@@ -12,8 +12,10 @@ worker.onmessage = (event) => {
       case 'analytics':
         event.stopPropagation();
         const result = AnalyticsResultHelp.analyze(eventData.data, eventData.appSettings);
-        IDB.insertData('analytics', result);
-        return worker.postMessage({...eventData, ...{data: result}});
+        return IDB.insertData('analytics', result).then((res) => {
+          result.id = res;
+          return worker.postMessage({...eventData, ...{data: result}});
+        });
       case 'words':
         event.stopPropagation();
         IDB.insertData('words', {...eventData.data, ...eventData.appSettings});
@@ -21,6 +23,14 @@ worker.onmessage = (event) => {
       case 'getLast100Rows':
         event.stopPropagation();
         return IDBQueries.getLast100Results(IDB.db, eventData.appSettings)
+        .then((res) => worker.postMessage({...eventData, ...{data: res}}));
+      case 'getRowById':
+        event.stopPropagation();
+        return IDBQueries.getRowById(IDB.db, eventData.appSettings, eventData.data.id)
+        .then((res) => worker.postMessage({...eventData, ...{data: res}}));
+      case 'getAllRows':
+        event.stopPropagation();
+        return IDBQueries.getAllData(IDB.db)
         .then((res) => worker.postMessage({...eventData, ...{data: res}}));
       case 'test':
         setTimeout(() => {

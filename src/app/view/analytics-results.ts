@@ -52,7 +52,16 @@ export function getTableRow(row: IAnalyticsResult) {
   const tr = document.createElement('tr');
   for (let j = 0; j < analyticsResultsKeys.length; j++) {
     const td = document.createElement('td');
-    td.textContent = JSON.stringify(row[analyticsResultsKeys[j]]);
+    const key = analyticsResultsKeys[j];
+    if (key !== 'textId') {
+      td.textContent = JSON.stringify(row[key]);
+    } else {
+      const button = document.createElement('button');
+      button.classList.add('textId');
+      button.setAttribute('resultsId', '' + row.id);
+      button.textContent = '' + row[key];
+      td.appendChild(button);
+    }
     tr.appendChild(td);
   }
   return tr;
@@ -61,6 +70,14 @@ export function getTableRow(row: IAnalyticsResult) {
 export function setTableRow(tr: HTMLTableRowElement, row) {
   const tds = tr.getElementsByTagName('td');
   for (let i = 0; i < analyticsResultsKeys.length; i++) {
-    tds[i].textContent = JSON.stringify(row[analyticsResultsKeys[i]]);
+    const td = tds[i];
+    const key = analyticsResultsKeys[i];
+    if (key !== 'textId') {
+      td.textContent = JSON.stringify(row[key]);
+    } else {
+      const button = td.children[0];
+      button.setAttribute('resultsId', '' + row.id);
+      button.textContent = '' + row[key];
+    }
   }
 }

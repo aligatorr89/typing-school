@@ -33,12 +33,12 @@ export default class IDB {
     return IDB.db.transaction(table, mode).objectStore(table);
   }
 
-  public static insertData(table: TypingSchoolTables, row: any) {
+  public static insertData(table: TypingSchoolTables, row: any): Promise<number> {
     const store = IDB.getObjectStore(table, 'readwrite');
     const req = store.add(row);
     return new Promise((resolve, reject) => {
       req.onsuccess = () => {
-        resolve(req.result);
+        resolve(req.result as number);
       };
       req.onerror = () => {
         console.log('IDB.insertData error', req.error);

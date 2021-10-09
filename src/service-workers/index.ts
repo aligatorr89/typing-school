@@ -1,6 +1,6 @@
 /// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
 /// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
-const CACHE_NAME = 'typing-school-v01';
+const CACHE_NAME = 'typing-school-v37RC';
 
 const CACHE_URLS_INIT = [
   '/',
@@ -38,14 +38,17 @@ sw.addEventListener('install', (event) => {
 
 sw.addEventListener('activate', (event) => {
   console.log('serviceWorker server here: is activating...', 'let\'s delete old caches');
-  caches.keys().then((cacheNames) => {
-    return Promise.all(
-      cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
-      .map((cacheName) => {
-        caches.delete(cacheName);
-      })
-    );
-  });
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (CACHE_NAME !== cacheName) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
 
 sw.addEventListener('fetch', (event) => {
@@ -68,7 +71,9 @@ sw.addEventListener('fetch', (event) => {
         console.log('serviceWorker here: saving fetch response to cache...', event.request.url);
 
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
+          if (fetchResponse.url.match('^(http|https)://')) {
+            cache.put(event.request, responseClone);
+          }
         });
       })
       .catch(() => {
@@ -77,3 +82,5 @@ sw.addEventListener('fetch', (event) => {
     }
   }));
 });
+
+sw.skipWaiting();

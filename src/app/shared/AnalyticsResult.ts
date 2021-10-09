@@ -2,10 +2,11 @@ import { IAnalyticsData } from './Analytics';
 import { IAppSettings } from './App';
 import { ExcerciseType, Language, Mode } from './TypingTest';
 
-export const analyticsResultsKeys = ['id', 'words', 'timeNeeded', 'mistakes',
+export const analyticsResultsKeys = ['id', 'textId', 'words', 'timeNeeded', 'mistakes',
 'correctWordCharacters', 'allWordCharacters', 'failedWords', 'wpm', 'wpm_standard'];
 
 export interface IAnalyticsResult {
+  id?: number;
   textId: number;
   words: number;
   timeNeeded: number;
@@ -18,6 +19,7 @@ export interface IAnalyticsResult {
   language: Language;
   mode: Mode;
   excerciseType: ExcerciseType;
+  datetime: string;
 }
 
 export interface IAnalyticsResultFailedWords {
@@ -38,6 +40,7 @@ export class AnalyticsResult implements IAnalyticsResult {
   public language: Language;
   public mode: Mode;
   public excerciseType: ExcerciseType;
+  public datetime: string;
   constructor(appSettings: IAppSettings) {
     this.textId = 0;
     this.words = 0;
@@ -51,12 +54,14 @@ export class AnalyticsResult implements IAnalyticsResult {
     this.mode = appSettings.mode;
     this.language = appSettings.language;
     this.excerciseType = appSettings.excerciseType;
+    this.datetime = new Date().toISOString();
   }
 }
 
 export class AnalyticsResultHelp {
   public static analyze(data: IAnalyticsData[], appSettings: IAppSettings): IAnalyticsResult {
     const result = new AnalyticsResult(appSettings);
+    result.textId = data.length ? data[0].textId : 0;
     for (let i = 0; i < data.length; i++) {
       const current = data[i];
       result.words += 1;

@@ -1,8 +1,8 @@
 import { IAnalyticsResult } from './shared/AnalyticsResult';
-import IDB from './shared/IndexedDb';
-import * as IDBQueries from './shared/TypingSchoolIndexedDbQueries';
+import { IAppSettings } from './shared/App';
 import { Language, languages, Mode, modes, TypingTestsType } from './shared/TypingTest';
 import * as ViewHelp from './shared/ViewHelp';
+import { postMessageData, postMessageResponse, worker } from './shared/WebWorker';
 import * as AnalyticsResultsViewHelp from './view/analytics-results';
 import * as TextViewHelp from './view/text-chunk';
 
@@ -110,7 +110,7 @@ export class Timer {
 }
 
 export class Results {
-  protected node: HTMLDivElement;
+  public node: HTMLDivElement;
   protected tableNode: HTMLTableElement;
   constructor() {
     this.node = document.getElementById('last_100_results') as HTMLDivElement;
@@ -133,18 +133,21 @@ export class Results {
 
 export class DownLoadResultsButton {
   protected node: HTMLButtonElement;
-  constructor() {
+  protected appSettings: IAppSettings;
+  constructor(appSettings: IAppSettings) {
     this.node = ViewHelp.findButtonElement('downloadResults');
     this.node.addEventListener('click', this.clickHandler);
     this.clickHandler = this.clickHandler.bind(this);
+    this.appSettings = appSettings;
   }
 
   private clickHandler(event: Event) {
-    IDBQueries.getAllData(IDB.db)
-    .then((data) => {
+    worker.postMessage(postMessageData('getAllRows', null, this.appSettings));
+    postMessageResponse()
+    .then((res) => {
       const element = document.createElement('a');
 
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(res.data)));
       element.setAttribute('download', 'TypingSchoolData.json');
 
       element.style.display = 'none';

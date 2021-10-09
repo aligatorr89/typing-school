@@ -38,8 +38,16 @@ class App {
     this.currentTextChunk = this.textData[this.currentChunkIndex].split('|');
     return this.currentTextChunk;
   }
+  public setTextChunk(textId: number) {
+    this.currentChunkIndex = textId - 1;
+    this.currentTextChunk = this.textData[this.currentChunkIndex].split('|');
+    return this.currentTextChunk;
+  }
   get textChunk() {
     return this.currentTextChunk ? this.currentTextChunk : [];
+  }
+  get textChunkId() {
+    return this.currentChunkIndex + 1;
   }
   public getData(settings: IAppSettings = this.settings) {
     return getTypingTests(settings.language, settings.mode)
@@ -48,6 +56,11 @@ class App {
       return data;
     })
     .catch((error) => error);
+  }
+  public setSettings(settings: IAppSettings) {
+    this.settings.language = settings.language;
+    this.settings.mode = settings.mode;
+    this.settings.excerciseType = settings.excerciseType;
   }
 }
 export default App;

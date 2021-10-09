@@ -1,6 +1,6 @@
 /// <reference path='../../node_modules/typescript/lib/lib.es2018.d.ts' />
 /// <reference path='../../node_modules/typescript/lib/lib.webworker.d.ts' />
-const CACHE_NAME = 'typing-school-v35RC';
+const CACHE_NAME = 'typing-school-v37RC';
 
 const CACHE_URLS_INIT = [
   '/',
@@ -71,7 +71,9 @@ sw.addEventListener('fetch', (event) => {
         console.log('serviceWorker here: saving fetch response to cache...', event.request.url);
 
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
+          if (fetchResponse.url.match('^(http|https)://')) {
+            cache.put(event.request, responseClone);
+          }
         });
       })
       .catch(() => {
